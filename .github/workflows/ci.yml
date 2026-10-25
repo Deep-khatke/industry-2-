@@ -1,0 +1,76 @@
+name: "CI - Core Telemetry & Quality"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Minimal read-only token permissions
+permissions:
+  contents: read
+
+# Ensure jobs terminate quickly to preserve free runner minutes
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  code-quality:
+    name: "Linting & Strict Type Checking"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: "Setup Python 3.11"
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install Quality Tools"
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff mypy pydantic cryptography pytest boto3
+
+      - name: "Run Ruff Linter"
+        run: python -m ruff check .
+
+      - name: "Run Mypy Strict Type Check"
+        run: python -m mypy --explicit-package-bases packages services adapters tools tests
+
+  automated-tests:
+    name: "Unit, Integration & Fault Tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: "Setup Python 3.11"
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install Dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: "Run Pytest Suite"
+        run: python -m pytest tests/ --junitxml=junit.xml
+
+      - name: "Upload Test Summary Artifact"
+        if: always()
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        with:
+          name: test-results
+          path: junit.xml
+          retention-days: 3 # Bounded retention to eliminate storage waste

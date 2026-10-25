@@ -1,0 +1,7 @@
+# Core dependencies
+pydantic==2.12.5
+cryptography==46.0.3
+
+# Optional AWS interface (stub/mocking)
+boto3==1.43.108
+botocore==1.43.108

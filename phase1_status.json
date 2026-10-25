@@ -1,0 +1,65 @@
+{
+  "project": "Federated Cyber Shield",
+  "phase": 1,
+  "architecture_baseline": "v1.2",
+  "verified_at": "2026-10-25T07:41:14.871080+00:00",
+  "overall_status": "PASSED",
+  "total_budget_spent": "0",
+  "currency": "INR / USD",
+  "zero_cost_compliance": true,
+  "real_cloud_resources_provisioned": false,
+  "architecture_gates": {
+    "G01_trust_boundaries": {
+      "gate_id": "G01",
+      "title": "Trust Boundaries & Tenant Isolation",
+      "status": "OFFLINE_VERIFIED",
+      "static_iam_policies": "PASSED",
+      "cross_tenant_source_authorization": "PASSED",
+      "untrusted_claim_rejection": "PASSED",
+      "live_aws_cross_account_acceptance": "BLOCKED_BY_ZERO_COST_POLICY"
+    },
+    "G02_telemetry_ingestion": {
+      "gate_id": "G02",
+      "title": "Telemetry Ingestion & Pipeline Robustness",
+      "status": "OFFLINE_VERIFIED",
+      "synthetic_parser_validation": "PASSED",
+      "template_caching_and_isolation": "PASSED",
+      "sequence_gap_detection": "PASSED",
+      "malformed_input_rejection": "PASSED",
+      "live_aws_nlb_kinesis_integration": "BLOCKED_BY_ZERO_COST_POLICY"
+    }
+  },
+  "verification_results": {
+    "ruff_lint": {
+      "passed": true,
+      "elapsed_seconds": 0.17894959999830462,
+      "summary": "Clean"
+    },
+    "mypy_typecheck": {
+      "passed": true,
+      "elapsed_seconds": 0.7720004000002518,
+      "summary": "0 errors"
+    },
+    "pytest_suite": {
+      "passed": true,
+      "elapsed_seconds": 2.500801699992735,
+      "summary": "51 passed"
+    },
+    "tofu_fmt": {
+      "passed": true,
+      "elapsed_seconds": 0.1387111000076402,
+      "summary": "Formatted"
+    },
+    "tofu_validate": {
+      "passed": true,
+      "elapsed_seconds": 3.1661037000012584,
+      "summary": "Valid configuration"
+    },
+    "secret_scan": {
+      "passed": true,
+      "elapsed_seconds": 0.09968040001695044,
+      "scanned_files": 92,
+      "findings_count": 0
+    }
+  }
+}

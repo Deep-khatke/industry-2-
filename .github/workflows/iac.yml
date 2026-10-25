@@ -1,0 +1,54 @@
+name: "IaC - OpenTofu Static Validation"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  opentofu-validation:
+    name: "OpenTofu Lint & Static Policy Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: "Setup OpenTofu"
+        uses: opentofu/setup-opentofu@592200bd4b9bbf477b8264b7826b7cf3884f14de # v1.0.5
+        with:
+          tofu_version: "1.8.8"
+
+      - name: "Setup Python for IaC Tests"
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: "3.11"
+
+      - name: "Install Pytest"
+        run: pip install pytest
+
+      - name: "Check OpenTofu Format"
+        run: tofu fmt -check -recursive infrastructure/opentofu/
+
+      - name: "Initialize OpenTofu (Offline Definition Mode)"
+        run: |
+          cd infrastructure/opentofu/environments/dev
+          tofu init -backend=false
+
+      - name: "Validate OpenTofu Modules"
+        run: |
+          cd infrastructure/opentofu/environments/dev
+          tofu validate
+
+      - name: "Run Static IaC Security Policy Tests"
+        run: python -m pytest tests/infrastructure/

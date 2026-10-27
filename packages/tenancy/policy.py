@@ -14,17 +14,42 @@ ROLE_PERMISSIONS: dict[Role, set[Permission]] = {
         Permission.AUDIT_WRITE,
         Permission.TENANT_MANAGE,
         Permission.POLICY_EVALUATE,
+        Permission.INCIDENT_READ,
+        Permission.INCIDENT_WRITE,
+        Permission.RESPONSE_READ,
+        Permission.RESPONSE_APPROVE,
     },
     Role.TENANT_ANALYST: {
         Permission.TELEMETRY_READ,
         Permission.TELEMETRY_EXPORT,
         Permission.AUDIT_READ,
+        Permission.INCIDENT_READ,
+        Permission.INCIDENT_WRITE,
+        Permission.RESPONSE_READ,
+    },
+    Role.SECURITY_ANALYST: {
+        Permission.TELEMETRY_READ,
+        Permission.AUDIT_READ,
+        Permission.INCIDENT_READ,
+        Permission.INCIDENT_WRITE,
+        Permission.RESPONSE_READ,
+    },
+    Role.SECURITY_RESPONDER: {
+        Permission.TELEMETRY_READ,
+        Permission.AUDIT_READ,
+        Permission.INCIDENT_READ,
+        Permission.RESPONSE_READ,
+        Permission.RESPONSE_APPROVE,
+    },
+    Role.READ_ONLY: {
+        Permission.TELEMETRY_READ,
+        Permission.AUDIT_READ,
+        Permission.INCIDENT_READ,
+        Permission.RESPONSE_READ,
     },
     Role.TENANT_EXPORTER: {
         Permission.TELEMETRY_INGEST,
     },
-    # CRITICAL SECURITY CONSTRAINT: Platform administrators DO NOT have unrestricted
-    # access to raw tenant telemetry. They manage tenancy lifecycle and audit trails only.
     Role.PLATFORM_ADMIN: {
         Permission.TENANT_MANAGE,
         Permission.AUDIT_READ,

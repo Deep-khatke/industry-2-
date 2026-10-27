@@ -1,0 +1,8 @@
+# FCS-PFL Zero-Cost Development Resource Limits
+resource_limits:
+  max_concurrent_workers: 2
+  max_memory_mb: 2048
+  max_training_timeout_seconds: 600
+  storage_quota_mb: 1024
+  enforce_cpu_only: true
+  zero_paid_services_guarantee: true

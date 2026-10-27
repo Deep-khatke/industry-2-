@@ -1,0 +1,59 @@
+# FCS-HMD Tenant Profiles Configuration (7 Simulated Rural ISPs)
+version: "1.2.0"
+
+tenants:
+  rural-isp-alpha:
+    name: "Tier 1 Rural Backbone ISP"
+    partition_file: "data/processed/partitions/isp_partition_1.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 1000
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-alpha"
+
+  rural-isp-bravo:
+    name: "Regional Wireless ISP"
+    partition_file: "data/processed/partitions/isp_partition_2.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 800
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-bravo"
+
+  rural-isp-charlie:
+    name: "Municipal Fiber ISP"
+    partition_file: "data/processed/partitions/isp_partition_3.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 1200
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-charlie"
+
+  rural-isp-delta:
+    name: "Community Cooperative ISP"
+    partition_file: "data/processed/partitions/isp_partition_4.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 600
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-delta"
+
+  rural-isp-echo:
+    name: "Enterprise Transit Provider"
+    partition_file: "data/processed/partitions/isp_partition_5.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 1500
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-echo"
+
+  rural-isp-foxtrot:
+    name: "Academic Campus Network"
+    partition_file: "data/processed/partitions/isp_partition_6.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 2000
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-foxtrot"
+
+  rural-isp-golf:
+    name: "Rural Agricultural Co-op"
+    partition_file: "data/processed/partitions/isp_partition_7.json"
+    anomaly_model: "isolationforest_anomaly_tenant"
+    threshold: 0.50
+    rate_limit_pkts_s: 500
+    isolated_storage: "artifacts/candidate-models/tenants/rural-isp-golf"

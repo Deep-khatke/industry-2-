@@ -1,0 +1,17 @@
+# FCS-PFL Local Model Training Hyperparameters
+training:
+  optimizer: "AdamW"
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  batch_size: 64
+  local_epochs: 1
+  criterion: "CrossEntropyLoss"
+  device: "cpu"  # Absolute zero-cost constraint: must function entirely on free CPU
+  model:
+    architecture: "TabularMLPNet"
+    input_dim: 14
+    hidden_dims: [64, 32]
+    num_classes: 2
+    dropout_rate: 0.2
+    use_group_norm: true  # Necessary for Opacus DP-SGD compatibility
+    use_batch_norm: false

@@ -2,7 +2,7 @@
   "project": "Federated Cyber Shield",
   "phase": 1,
   "architecture_baseline": "v1.2",
-  "verified_at": "2026-10-25T07:41:14.871080+00:00",
+  "verified_at": "2026-10-25T14:20:37.104071+00:00",
   "overall_status": "PASSED",
   "total_budget_spent": "0",
   "currency": "INR / USD",
@@ -32,33 +32,33 @@
   "verification_results": {
     "ruff_lint": {
       "passed": true,
-      "elapsed_seconds": 0.17894959999830462,
+      "elapsed_seconds": 0.18389849999221042,
       "summary": "Clean"
     },
     "mypy_typecheck": {
       "passed": true,
-      "elapsed_seconds": 0.7720004000002518,
+      "elapsed_seconds": 1.472661000007065,
       "summary": "0 errors"
     },
     "pytest_suite": {
       "passed": true,
-      "elapsed_seconds": 2.500801699992735,
-      "summary": "51 passed"
+      "elapsed_seconds": 4.59940700000152,
+      "summary": "93 passed"
     },
     "tofu_fmt": {
       "passed": true,
-      "elapsed_seconds": 0.1387111000076402,
+      "elapsed_seconds": 0.09973919999902137,
       "summary": "Formatted"
     },
     "tofu_validate": {
       "passed": true,
-      "elapsed_seconds": 3.1661037000012584,
+      "elapsed_seconds": 2.665565200004494,
       "summary": "Valid configuration"
     },
     "secret_scan": {
       "passed": true,
-      "elapsed_seconds": 0.09968040001695044,
-      "scanned_files": 92,
+      "elapsed_seconds": 0.44489210000028834,
+      "scanned_files": 218,
       "findings_count": 0
     }
   }

@@ -1,0 +1,4 @@
+version: "1.2.0"
+model_family: "DummyBaseline"
+strategy: "prior"  # "prior", "most_frequent", "stratified"
+random_seed: 42

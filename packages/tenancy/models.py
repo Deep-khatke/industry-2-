@@ -34,6 +34,9 @@ class Role(StrEnum):
 
     TENANT_ADMIN = "TENANT_ADMIN"
     TENANT_ANALYST = "TENANT_ANALYST"
+    SECURITY_ANALYST = "SECURITY_ANALYST"
+    SECURITY_RESPONDER = "SECURITY_RESPONDER"
+    READ_ONLY = "READ_ONLY"
     TENANT_EXPORTER = "TENANT_EXPORTER"
     PLATFORM_ADMIN = "PLATFORM_ADMIN"
     PLATFORM_AUDITOR = "PLATFORM_AUDITOR"
@@ -49,6 +52,10 @@ class Permission(StrEnum):
     AUDIT_WRITE = "audit:write"
     TENANT_MANAGE = "tenant:manage"
     POLICY_EVALUATE = "policy:evaluate"
+    INCIDENT_READ = "incident:read"
+    INCIDENT_WRITE = "incident:write"
+    RESPONSE_READ = "response:read"
+    RESPONSE_APPROVE = "response:approve"
 
 
 class ExporterRegistration(BaseModel):

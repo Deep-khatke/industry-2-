@@ -1,0 +1,35 @@
+# FCS-HMD Evidence Fusion Configuration (Federated Cyber Shield v1.2)
+version: "1.2.0"
+
+fusion_strategy: "DETERMINISTIC_BAYESIAN_SPECIALIST_DOMINANCE"
+
+weights:
+  general: 0.70
+  anomaly: 0.30
+
+specialist_dominance:
+  dominance_threshold: 0.85
+  fallback_weight: 0.50
+
+risk_thresholds:
+  critical: 0.85
+  high: 0.70
+  medium: 0.50
+  low: 0.30
+
+margin_abstention:
+  threshold_delta: 0.05
+
+rule_risk_floors:
+  ddos_confirmed:
+    min_probability: 0.70
+    min_risk_level: "HIGH"
+  portscan_confirmed:
+    min_probability: 0.65
+    min_risk_level: "MEDIUM"
+
+fallback_policies:
+  missing_specialist: "GENERAL_AND_ANOMALY_ONLY"
+  timed_out_specialist: "DEGRADE_AND_LOG"
+  all_specialists_failed: "LEVEL_1_BASELINE"
+  general_model_failed: "ANOMALY_AND_RULES_DEGRADED"

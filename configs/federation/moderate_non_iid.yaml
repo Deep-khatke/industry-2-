@@ -1,0 +1,7 @@
+# FCS-PFL Moderate Non-IID Partition Experiment Configuration
+partition_experiment:
+  regime: "moderate_non_iid"
+  partition_dir: "data/processed/partitions/moderate_non_iid"
+  manifest_path: "data/processed/partitions/moderate_non_iid/partition_manifest.json"
+  description: "Moderately skewed attack distributions representing realistic regional threat variance."
+  num_participants: 7

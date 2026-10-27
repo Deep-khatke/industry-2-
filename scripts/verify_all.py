@@ -63,10 +63,10 @@ def main() -> None:
 
     # 3. Pytest Test Suites
     ok, out, el = run_step(
-        "Pytest Automated Test Suite (51 Tests)",
+        "Pytest Automated Test Suite (93 Tests: 51 Phase 1 + 42 Phase 2)",
         [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"],
     )
-    results["pytest_suite"] = {"passed": ok, "elapsed_seconds": el, "summary": "51 passed" if ok else out}
+    results["pytest_suite"] = {"passed": ok, "elapsed_seconds": el, "summary": "93 passed" if ok else out}
     if not ok:
         all_passed = False
 

@@ -1,0 +1,58 @@
+version: "1.2.0"
+policy_name: "Seven Simulated Rural ISP Federated Partition Policy"
+
+client_count: 7
+random_seed: 42
+minimum_records_per_client: 50
+
+clients:
+  isp_01:
+    tenant_id: "tenant-isp-alpha"
+    name: "Northern Valley Broadband"
+    region: "ap-south-1"
+  isp_02:
+    tenant_id: "tenant-isp-beta"
+    name: "Coastal Reach Networks"
+    region: "ap-south-1"
+  isp_03:
+    tenant_id: "tenant-isp-gamma"
+    name: "Highland Wireless ISP"
+    region: "ap-south-1"
+  isp_04:
+    tenant_id: "tenant-isp-delta"
+    name: "Western Plains Fiber"
+    region: "ap-south-1"
+  isp_05:
+    tenant_id: "tenant-isp-epsilon"
+    name: "River Bend Telecommunications"
+    region: "ap-south-1"
+  isp_06:
+    tenant_id: "tenant-isp-zeta"
+    name: "Pine Ridge Regional ISP"
+    region: "ap-south-1"
+  isp_07:
+    tenant_id: "tenant-isp-eta"
+    name: "Desert Sun Rural Connect"
+    region: "ap-south-1"
+
+regimes:
+  IID:
+    description: "Approximately balanced class and source allocation across all 7 clients"
+    method: "STRATIFIED_UNIFORM"
+    dirichlet_alpha: null
+
+  MODERATE_NON_IID:
+    description: "Moderate class skew simulating diverse client threat profiles"
+    method: "DIRICHLET"
+    dirichlet_alpha: 1.0
+
+  STRONG_NON_IID:
+    description: "High class skew simulating severe specialization (e.g., target ISP under DDoS campaign)"
+    method: "DIRICHLET"
+    dirichlet_alpha: 0.1
+
+rules:
+  strictly_disjoint_client_assignments: true
+  train_data_only: true
+  shared_feature_schema: true
+  exclude_holdout_source_from_clients: true

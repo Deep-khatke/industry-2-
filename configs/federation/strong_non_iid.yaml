@@ -1,0 +1,7 @@
+# FCS-PFL Strong Non-IID Partition Experiment Configuration
+partition_experiment:
+  regime: "strong_non_iid"
+  partition_dir: "data/processed/partitions/strong_non_iid"
+  manifest_path: "data/processed/partitions/strong_non_iid/partition_manifest.json"
+  description: "Severely skewed partitions where specific ISPs encounter concentrated attack classes."
+  num_participants: 7

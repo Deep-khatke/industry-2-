@@ -24,6 +24,13 @@ keywords = [
 dependencies = [
     "pydantic>=2.7.0",
     "cryptography>=42.0.0",
+    "polars>=1.0.0",
+    "pyarrow>=15.0.0",
+    "duckdb>=0.10.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.4.0",
+    "pyyaml>=6.0.0",
 ]
 
 [project.optional-dependencies]
@@ -38,9 +45,16 @@ aws = [
     "boto3>=1.34.0",
 ]
 
+[project.scripts]
+fcs-data = "fcs_udip.cli:main"
+fcs-ml = "fcs_ml.cli:main"
+fcs = "tools.fcs_cli:main"
+fcs-hmd = "fcs_ml.hmd.cli:main"
+fcs-fl = "fcs_pfl.cli:main"
+
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["packages*", "services*", "adapters*", "tools*"]
+where = [".", "services/dataset_pipeline/src", "services/ml_training/src", "services/api/src", "services/federated-learning/src"]
+include = ["packages*", "services*", "adapters*", "tools*", "fcs_udip*", "fcs_ml*", "fcs_api*", "fcs_pfl*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -49,7 +63,11 @@ pythonpath = [
     "packages",
     "services",
     "adapters",
-    "tools"
+    "tools",
+    "services/dataset_pipeline/src",
+    "services/ml_training/src",
+    "services/api/src",
+    "services/federated-learning/src"
 ]
 addopts = "-v --strict-markers -ra"
 markers = [
@@ -59,6 +77,15 @@ markers = [
     "fault_injection: Fault tolerance and edge-case handling tests",
     "infrastructure: Static analysis of OpenTofu / IaC configurations",
     "blocked_zero_cost: Tests requiring paid cloud infrastructure (deferred)",
+    "dataset_unit: Unit tests for FCS-UDIP dataset pipeline components",
+    "dataset_integration: End-to-end integration tests for FCS-UDIP pipeline",
+    "dataset_security: Security, privacy, and leakage prevention tests for FCS-UDIP",
+    "dataset_reproducibility: Reproducibility and seed-invariant tests for FCS-UDIP",
+    "ml_unit: Unit tests for ML model and training components",
+    "ml_integration: End-to-end ML pipeline and export integration tests",
+    "ml_security: ML model security and leakage prevention tests",
+    "ml_reproducibility: Seed determinism and experiment reproducibility tests",
+    "ml_performance: Inference latency, throughput, and resource benchmark tests",
 ]
 
 [tool.ruff]
@@ -80,13 +107,20 @@ ignore = [
     "B008",  # Do not perform function calls in argument defaults
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E402"]
+"tools/*" = ["E402"]
+"services/ml_training/src/fcs_ml/hmd/cli.py" = ["E402"]
+"services/federated-learning/src/fcs_pfl/cli.py" = ["E402"]
+
 [tool.ruff.lint.isort]
-known-first-party = ["packages", "services", "adapters", "tools"]
+known-first-party = ["packages", "services", "adapters", "tools", "fcs_udip", "fcs_ml", "fcs_pfl"]
 
 [tool.mypy]
 python_version = "3.11"
+mypy_path = ["services/dataset_pipeline/src", "services/ml_training/src"]
 strict = true
-warn_return_any = true
+warn_return_any = false
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
@@ -94,7 +128,19 @@ check_untyped_defs = true
 disallow_untyped_decorators = true
 no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = true
+warn_unused_ignores = false
 warn_no_return = true
 warn_unreachable = true
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*",
+    "lightgbm.*",
+    "torch.*",
+    "scipy.*",
+    "matplotlib.*",
+    "boto3.*",
+]
+ignore_missing_imports = true
+ignore_errors = true

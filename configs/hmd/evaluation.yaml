@@ -1,0 +1,42 @@
+# FCS-HMD Evaluation & Benchmarks Configuration (Federated Cyber Shield v1.2)
+version: "1.2.0"
+
+evaluation_split:
+  manifest_path: "data/processed/dataset_manifest.json"
+  test_split_path: "data/processed/test_split.parquet"
+  total_test_samples: 209
+  attack_samples: 184
+  benign_samples: 25
+
+experiments:
+  - id: "E5-01"
+    name: "General Detector Only Baseline"
+    models: ["lightgbm_deployable_subset"]
+  - id: "E5-02"
+    name: "General + Tenant Anomaly Ensemble"
+    models: ["lightgbm_deployable_subset", "isolationforest_anomaly_tenant"]
+  - id: "E5-03"
+    name: "General + DDoS Specialist"
+    models: ["lightgbm_deployable_subset", "lightgbm_ddos_specialist"]
+  - id: "E5-04"
+    name: "General + Scanning Specialist"
+    models: ["lightgbm_deployable_subset", "lightgbm_scanning_specialist"]
+  - id: "E5-05"
+    name: "General + Local Anomaly + Specialists"
+    models: ["lightgbm_deployable_subset", "isolationforest_anomaly_tenant", "lightgbm_ddos_specialist", "lightgbm_scanning_specialist"]
+  - id: "E5-06"
+    name: "Full Hierarchical FCS-HMD with Deterministic Fusion"
+    models: ["*"]
+  - id: "E5-07"
+    name: "Learned Stacking Meta-Model vs Deterministic Fusion"
+    meta_model: "LogisticRegression"
+  - id: "E5-08"
+    name: "Missing-Specialist Fallback Evaluation"
+  - id: "E5-09"
+    name: "Seven Simulated ISP Distribution Shift"
+  - id: "E5-10"
+    name: "Model Routing vs Full Execution Overhead"
+  - id: "E5-11"
+    name: "Reliability & Timeout Fallback"
+  - id: "E5-12"
+    name: "Deployable vs Research Feature Compatibility"

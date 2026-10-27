@@ -1,0 +1,47 @@
+# FCS-PFL Participant Cohort Configuration
+participants:
+  cohort_size: 7
+  min_required_cohort: 5
+  clients:
+    - id: "isp_01"
+      name: "ISP Alpha (Simulated Tier-1 Transit Provider)"
+      data_partition: "isp_01.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_02"
+      name: "ISP Beta (Simulated Regional Carrier)"
+      data_partition: "isp_02.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_03"
+      name: "ISP Gamma (Simulated Enterprise Network)"
+      data_partition: "isp_03.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_04"
+      name: "ISP Delta (Simulated National Broadband)"
+      data_partition: "isp_04.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_05"
+      name: "ISP Epsilon (Simulated Cloud Interconnect)"
+      data_partition: "isp_05.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_06"
+      name: "ISP Zeta (Simulated Mobile Data Backbone)"
+      data_partition: "isp_06.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5
+    - id: "isp_07"
+      name: "ISP Eta (Simulated Edge Gateway Network)"
+      data_partition: "isp_07.parquet"
+      state: "ACTIVE"
+      max_epsilon: 10.0
+      delta_target: 1.0e-5

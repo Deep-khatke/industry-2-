@@ -1,0 +1,36 @@
+version: "1.2.0"
+model_family: "MulticlassClassifier"
+backend: "lightgbm"  # "lightgbm" or "mlp"
+
+hyperparameters:
+  boosting_type: "gbdt"
+  objective: "multiclass"
+  metric: "multi_logloss"
+  n_estimators: 150
+  learning_rate: 0.05
+  num_leaves: 31
+  max_depth: 6
+  subsample: 0.8
+  colsample_bytree: 0.8
+  class_weight: "balanced"
+  n_jobs: 2
+  random_state: 42
+  verbose: -1
+
+supported_classes:
+  - "Benign"
+  - "DDoS"
+  - "DoS"
+  - "Reconnaissance"
+  - "Scanning"
+  - "Botnet"
+  - "Brute Force"
+  - "Injection"
+  - "Exploits"
+  - "Fuzzers"
+  - "Backdoor"
+  - "Web Attack"
+  - "Infiltration"
+  - "Unknown"
+
+uncertainty_threshold: 0.40  # If max probability < 0.40, flag as UNCERTAIN/REVIEW_REQUIRED

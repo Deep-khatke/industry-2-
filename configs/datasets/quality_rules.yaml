@@ -1,0 +1,44 @@
+version: "1.2.0"
+ruleset_name: "Federated Cyber Shield Data Quality and Quarantine Rules"
+
+policies:
+  - id: "RULE_01_SCHEMA_MATCH"
+    target: "dataset_columns"
+    description: "Verify all mandatory 43 NetFlow v2 features and target labels are present"
+    severity: "FATAL"
+    action: "REJECT"
+
+  - id: "RULE_02_NON_NEGATIVE_COUNTS"
+    target: ["IN_BYTES", "OUT_BYTES", "IN_PKTS", "OUT_PKTS", "FLOW_DURATION_MILLISECONDS"]
+    condition: "value < 0"
+    action: "QUARANTINE"
+    reason: "Packet counts, byte counts, and duration must be non-negative"
+
+  - id: "RULE_03_VALID_PORT_RANGE"
+    target: ["L4_SRC_PORT", "L4_DST_PORT"]
+    condition: "value < 0 or value > 65535"
+    action: "QUARANTINE"
+    reason: "Layer 4 port numbers must be between 0 and 65535"
+
+  - id: "RULE_04_VALID_PROTOCOL"
+    target: ["PROTOCOL"]
+    condition: "value < 0 or value > 255"
+    action: "QUARANTINE"
+    reason: "IP protocol byte must be between 0 and 255"
+
+  - id: "RULE_05_NAN_AND_INFINITY"
+    target: "all_features"
+    condition: "is_nan(value) or is_infinite(value)"
+    numeric_features_action: "NORMALIZE_MEDIAN"
+    critical_features_action: "QUARANTINE"
+    critical_features: ["IN_BYTES", "IN_PKTS", "L4_DST_PORT", "PROTOCOL", "Label"]
+
+  - id: "RULE_06_VALID_LABELS"
+    target: ["Label", "Attack"]
+    condition: "Label not in (0, 1) or Attack is null or Attack == ''"
+    action: "QUARANTINE"
+    reason: "Target labels must be valid non-empty attack names with consistent binary flag"
+
+  - id: "RULE_07_IMMUTABLE_RAW"
+    description: "Raw source files must never be modified in-place"
+    enforce: true

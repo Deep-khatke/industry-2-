@@ -1,0 +1,41 @@
+# FCS-HMD Routing Configuration (Federated Cyber Shield v1.2)
+version: "1.2.0"
+
+router:
+  level1_suspicion_threshold: 0.60
+  level1_anomaly_threshold: 0.65
+  max_concurrent_specialists: 2
+  budget_timeout_us: 100000.0   # 100ms per model
+  short_circuit_benign_baseline: true
+
+triggers:
+  ddos:
+    rate_threshold_pkts_per_sec: 100.0
+    volumetric_bytes_per_sec: 50000.0
+    flow_duration_min_ms: 100.0
+    target_specialist: "lightgbm_ddos_specialist"
+
+  scanning:
+    syn_probe_flag: 2          # TCP SYN = 2
+    probe_ports:
+      - 21   # FTP
+      - 22   # SSH
+      - 23   # Telnet
+      - 25   # SMTP
+      - 53   # DNS
+      - 110  # POP3
+      - 135  # MSRPC
+      - 139  # NetBIOS
+      - 143  # IMAP
+      - 445  # SMB
+      - 1433 # MSSQL
+      - 3306 # MySQL
+      - 3389 # RDP
+      - 5432 # Postgres
+      - 8080 # Alt-HTTP
+    packet_count_threshold: 5
+    target_specialist: "lightgbm_scanning_specialist"
+
+  botnet:
+    eligible_for_routing: false
+    ineligibility_code: "SCHEMA_MISSING_DNS_AND_JITTER"

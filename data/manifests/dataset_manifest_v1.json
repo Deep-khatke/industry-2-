@@ -1,0 +1,48 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "dataset_id": "NF-UQ-NIDS-v2-FCS-Processed",
+  "dataset_version": "2.0.0",
+  "source_lineage": [
+    "NF-UQ-NIDS-v2",
+    "NF-UNSW-NB15-v2",
+    "NF-CSE-CIC-IDS2018-v2",
+    "NF-BoT-IoT-v2",
+    "NF-ToN-IoT-v2"
+  ],
+  "source_checksums": {},
+  "license_info": {
+    "license_type": "RESEARCH_ONLY",
+    "commercial_allowed": "false",
+    "citation": "Sarhan et al. 2022"
+  },
+  "feature_schema_digest": "1e26a7257f85eb00b20b2085bb2e9d36f6676455bffdb6aaa6aecd94ad7be86e",
+  "label_taxonomy_digest": "036cc037822561e49c8c3d55327b2a2e",
+  "split_policy_digest": "036cc037822561e49c8c3d55327b2a2e",
+  "preprocessing_version": "1.2.0",
+  "build_code_revision": "phase2-dev",
+  "creation_timestamp": "2026-10-25T14:20:53.360411Z",
+  "row_counts": {
+    "raw": 1400,
+    "clean": 1400,
+    "quarantined": 0,
+    "train": 998,
+    "val": 193,
+    "test": 209
+  },
+  "source_statistics": {
+    "clean_ratio": 1.0,
+    "duplicates_dropped": 0
+  },
+  "output_artifact_digests": {
+    "train.parquet": "413f4315f05c30d59b54f99257bad433b50ffc2a2f9eece02768cfb8d44835b9",
+    "val.parquet": "16e92d9adbeea1ccb90515a542bce13c484b0f42102f083c7ed28a9135ad64ec",
+    "test.parquet": "1a6395da6a7a9a637e907917aeeb6c61a28e1e91bd1efec9ea1298f6bc8c6340"
+  },
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "dev-pipeline-ephemeral-v1",
+    "signature_hex": "858c8ee391478a46f481b9cf6ae1e6a0caa6f51d4792bf1b1f50bb8ee6f9ee5c",
+    "signed_at": "2026-10-25T14:20:53.360496Z",
+    "is_production_authority": false
+  }
+}

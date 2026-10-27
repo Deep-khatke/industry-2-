@@ -77,3 +77,32 @@ Thumbs.db
 /scratch/
 /artifacts/
 /data/local/
+/data/raw/
+/data/staging/
+/data/processed/
+*.parquet
+*.csv.gz
+!data/synthetic-fixtures/
+
+# Node.js & Frontend
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# Go & Hyperledger Fabric Artifacts
+bin/
+*.exe
+*.test
+*.out
+crypto-config/
+channel-artifacts/
+organizations/peerOrganizations/
+organizations/ordererOrganizations/
+msp/keystore/
+*.block
+*.tx
+

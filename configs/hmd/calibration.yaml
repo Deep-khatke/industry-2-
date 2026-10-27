@@ -1,0 +1,27 @@
+# FCS-HMD Calibration Configuration (Federated Cyber Shield v1.2)
+version: "1.2.0"
+
+calibration_methods:
+  general_detector:
+    method: "sigmoid"
+    clip_min: 0.0001
+    clip_max: 0.9999
+
+  isolation_forest:
+    method: "score_sigmoid"
+    scale_factor: 10.0
+    center_offset: 0.0
+
+  autoencoder:
+    method: "reconstruction_sigmoid"
+    reconstruction_threshold: 0.01
+    temperature: 0.02
+
+  specialists:
+    method: "platt_sigmoid"
+    regularization: 1.0e-4
+
+uncertainty:
+  abstain_lower: 0.45
+  abstain_upper: 0.55
+  max_acceptable_ece: 0.15

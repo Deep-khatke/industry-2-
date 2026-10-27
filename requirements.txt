@@ -2,6 +2,15 @@
 pydantic==2.12.5
 cryptography==46.0.3
 
+# Phase 2 Dataset Pipeline (Zero-Cost Open Source)
+polars==1.44.2
+pyarrow==25.0.1
+duckdb==2.0.0
+numpy==2.5.3
+pandas==3.0.6
+scikit-learn==1.9.1
+pyyaml==6.0.3
+
 # Optional AWS interface (stub/mocking)
 boto3==1.43.108
 botocore==1.43.108

@@ -1,0 +1,14 @@
+# FCS-PFL Differential Privacy (Opacus DP-SGD) Configuration
+differential_privacy:
+  enabled: true
+  engine: "Opacus"
+  opacus_version: "1.6.0"
+  protected_unit: "one_nonoverlapping_netflow_window_record"
+  target_epsilon: 2.0
+  target_delta: 1.0e-5
+  max_grad_norm: 1.0
+  noise_multiplier: 1.1
+  sample_rate: 0.05
+  accountant: "prv"  # Privacy Random Variables or RDP
+  secure_mode: false  # Free development mode; set to true with CSPRNG for production
+  batch_clipping: true

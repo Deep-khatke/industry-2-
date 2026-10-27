@@ -1,0 +1,17 @@
+# FCS-PFL Core Federation Configuration (Version 1.2)
+federation:
+  system_name: "Federated Cyber Shield Privacy-Preserving Federated Learning Engine (FCS-PFL)"
+  version: "1.2.0"
+  profile: "protected"  # Options: "research", "protected"
+  coordinator_id: "fcs_dev_coordinator_signed"
+  framework: "flower"
+  flower_version: "1.42.0"
+  model_architecture: "TabularMLPNet"
+  feature_spec: "deployable_v1"
+  feature_dim: 14
+  default_rounds: 3
+  reconstruction_threshold: 5
+  total_participants: 7
+  equal_isp_weighting: true
+  model_registry_path: "artifacts/candidate-models"
+  checkpoints_path: "artifacts/federation/checkpoints"

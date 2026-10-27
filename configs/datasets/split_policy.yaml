@@ -1,0 +1,36 @@
+version: "1.2.0"
+policy_name: "Leakage-Safe Train/Validation/Test Splitting Policy"
+
+default_ratios:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+
+random_seed: 42
+
+strategies:
+  group_aware:
+    enabled: true
+    grouping_column: "IPV4_SRC_ADDR"  # Or /24 subnet prefix
+    fallback_if_missing: "FALLBACK_DETERMINISTIC_HASH"
+    description: "Assigns entire host IP/subnets to either train OR test, preventing cross-split session leakage."
+
+  time_aware:
+    enabled: true
+    timestamp_columns:
+      - "FLOW_START_TIMESTAMP"
+      - "FIRST_SWITCHED"
+      - "FLOW_DURATION_MILLISECONDS"
+    description: "Splits chronologically when valid timestamps exist to prevent future-data leakage."
+
+  independent_source_holdout:
+    enabled: true
+    holdout_sources:
+      - "NF-ToN-IoT-v2"
+    description: "Completely withholds one parent source from train/val to test true zero-shot cross-environment generalization."
+
+leakage_prevention_rules:
+  strictly_zero_exact_duplicates_across_splits: true
+  freeze_split_before_preprocessing_fit: true
+  drop_raw_ip_addresses_from_predictors: true
+  forbid_target_or_metadata_columns: true

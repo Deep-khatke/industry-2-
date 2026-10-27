@@ -1,0 +1,15 @@
+version: "1.2.0"
+model_family: "LogisticRegression"
+
+hyperparameters:
+  penalty: "l2"
+  C: 1.0
+  solver: "lbfgs"
+  max_iter: 1000
+  class_weight: "balanced"
+  tol: 1e-4
+  random_state: 42
+
+preprocessing:
+  standardize: true
+  handle_missing: "median"

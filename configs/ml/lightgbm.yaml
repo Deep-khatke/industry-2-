@@ -1,0 +1,21 @@
+version: "1.2.0"
+model_family: "LightGBM"
+
+hyperparameters:
+  boosting_type: "gbdt"
+  objective: "binary"
+  metric: "binary_logloss"
+  n_estimators: 150
+  learning_rate: 0.05
+  num_leaves: 31
+  max_depth: 6
+  subsample: 0.8
+  colsample_bytree: 0.8
+  class_weight: "balanced"
+  n_jobs: 2
+  random_state: 42
+  verbose: -1
+
+early_stopping:
+  stopping_rounds: 15
+  eval_metric: "binary_logloss"

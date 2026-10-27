@@ -1,0 +1,7 @@
+# FCS-PFL IID Partition Experiment Configuration
+partition_experiment:
+  regime: "iid"
+  partition_dir: "data/processed/partitions/iid"
+  manifest_path: "data/processed/partitions/iid/partition_manifest.json"
+  description: "Uniformly distributed attack and benign telemetry across all 7 ISP participants."
+  num_participants: 7

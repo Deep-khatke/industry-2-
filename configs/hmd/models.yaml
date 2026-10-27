@@ -1,0 +1,90 @@
+# FCS-HMD Models Configuration (Federated Cyber Shield v1.2)
+# Architecture: FCS-HMD Hierarchical Multi-Model Intrusion Detection Engine
+version: "1.2.0"
+
+models:
+  general_detector:
+    model_id: "lightgbm_deployable_subset"
+    model_family: "LightGBM"
+    feature_track: "DEPLOYABLE_SUBSET"
+    input_dim: 14
+    artifact_path: "artifacts/candidate-models/lightgbm_deployable_subset/model.txt"
+    calibration_method: "sigmoid"
+    decision_threshold: 0.50
+    abstain_margin: 0.05
+    timeout_budget_ms: 100.0
+    role: "LEVEL_1_GENERAL_DETECTOR"
+    enabled: true
+
+  anomaly_detector_iforest:
+    model_id: "isolationforest_anomaly_tenant"
+    model_family: "IsolationForest"
+    feature_track: "DEPLOYABLE_SUBSET"
+    input_dim: 14
+    artifact_path: "artifacts/candidate-models/isolationforest_anomaly_tenant/model.joblib"
+    calibration_method: "score_sigmoid"
+    decision_threshold: 0.50
+    abstain_margin: 0.05
+    timeout_budget_ms: 100.0
+    contamination: 0.05
+    tenancy_isolated: true
+    role: "LEVEL_1_TENANT_ANOMALY"
+    enabled: true
+
+  anomaly_detector_autoencoder:
+    model_id: "autoencoder_anomaly"
+    model_family: "Autoencoder"
+    feature_track: "DEPLOYABLE_SUBSET"
+    input_dim: 9
+    latent_dim: 4
+    artifact_path: "artifacts/candidate-models/autoencoder_anomaly/model.pt"
+    calibration_method: "reconstruction_sigmoid"
+    decision_threshold: 0.01
+    abstain_margin: 0.005
+    timeout_budget_ms: 100.0
+    tenancy_isolated: true
+    role: "LEVEL_1_TENANT_ANOMALY_CANDIDATE"
+    enabled: false
+
+  ddos_specialist:
+    model_id: "lightgbm_ddos_specialist"
+    model_family: "LightGBM"
+    feature_track: "DEPLOYABLE_SUBSET"
+    input_dim: 14
+    artifact_path: "artifacts/candidate-models/lightgbm_ddos_specialist/model.txt"
+    calibration_method: "sigmoid"
+    decision_threshold: 0.50
+    dominance_threshold: 0.85
+    abstain_margin: 0.05
+    timeout_budget_ms: 100.0
+    role: "LEVEL_2_SPECIALIST"
+    target_vector: "DDoS"
+    enabled: true
+
+  scanning_specialist:
+    model_id: "lightgbm_scanning_specialist"
+    model_family: "LightGBM"
+    feature_track: "DEPLOYABLE_SUBSET"
+    input_dim: 14
+    artifact_path: "artifacts/candidate-models/lightgbm_scanning_specialist/model.txt"
+    calibration_method: "sigmoid"
+    decision_threshold: 0.50
+    dominance_threshold: 0.85
+    abstain_margin: 0.05
+    timeout_budget_ms: 100.0
+    role: "LEVEL_2_SPECIALIST"
+    target_vector: "PortScan"
+    enabled: true
+
+  botnet_specialist:
+    model_id: "lightgbm_botnet_specialist"
+    model_family: "LightGBM"
+    feature_track: "DEPLOYABLE_SUBSET_BENCHMARK"
+    artifact_path: "artifacts/candidate-models/lightgbm_botnet_specialist/model.txt"
+    calibration_method: "sigmoid"
+    decision_threshold: 0.50
+    role: "LEVEL_2_SPECIALIST_OPTIONAL"
+    target_vector: "Botnet"
+    eligibility_status: "NOT_ELIGIBLE_FOR_PRODUCTION_DEPLOYMENT"
+    eligibility_reason: "FlowEvent v1 schema lacks required DNS query/response and packet jitter features"
+    enabled: false

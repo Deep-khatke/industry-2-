@@ -1,0 +1,11 @@
+# FCS-PFL Persistent Privacy Budget Accounting Configuration
+privacy_budget:
+  db_path: "artifacts/federation/privacy_budgets.sqlite"
+  storage_backend: "sqlite"
+  epsilon_max_default: 10.0
+  delta_max_default: 1.0e-5
+  reservation_timeout_seconds: 300
+  fail_closed_on_exhaustion: true
+  prevent_double_spending: true
+  crash_consistency: true
+  receipt_format: "PrivacyReceipt_v1"

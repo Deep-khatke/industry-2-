@@ -1,0 +1,136 @@
+{
+  "phase": "Phase 5 \u2014 Hierarchical Multi-Model Intrusion Detection Engine (FCS-HMD)",
+  "architecture_baseline": "Federated Cyber Shield v1.2",
+  "budget": "\u20b90.00 / $0.00 (Strictly Zero-Cost Local CPU Execution)",
+  "timestamp": "2026-10-27T06:57:04.538771+00:00",
+  "overall_status": "PASSED",
+  "gate_g15_status": "PASS",
+  "components": {
+    "general_threat_detector": "LightGBM Deployable Subset (14 features, calibrated sigmoid probabilities)",
+    "tenant_anomaly_detector": "Isolation Forest & Autoencoder Anomaly Detectors (pure benign calibration)",
+    "ddos_specialist": "LightGBM DDoS Specialist (calibrated volumetric attack classifier)",
+    "scanning_specialist": "LightGBM Scanning Specialist (SYN & reconnaissance probe detector)",
+    "botnet_specialist": "Documented as NOT_ELIGIBLE for FlowEvent v1 (lacks payload DNS & jitter features)",
+    "model_router": "ConditionalModelRouter (24.9 us p95 overhead, feature/prob triggers)",
+    "evidence_fusion": "EvidenceFusionEngine (deterministic Bayesian weights + rule safety floor)",
+    "bundle_manager": "DetectionBundle & BundleValidator with SHA-256 seal and atomic rollback",
+    "api_endpoints": "FastAPI /v1/detection/bundle, /routing-decisions, /isp-anomaly-status, /models",
+    "soc_dashboard": "React 18 / TypeScript Model Monitoring Page with HMD Topology Visualizer"
+  },
+  "verification_steps": {
+    "ruff_lint": {
+      "passed": true,
+      "elapsed_seconds": 0.18850789999851258,
+      "summary": "Clean (0 errors)"
+    },
+    "frontend_build": {
+      "passed": true,
+      "elapsed_seconds": 6.033243300000322,
+      "summary": "Vite bundle compiled successfully"
+    },
+    "phase5_unit_tests": {
+      "passed": true,
+      "elapsed_seconds": 12.04911980000179,
+      "summary": "All 15 unit tests passed"
+    },
+    "phase5_integration_tests": {
+      "passed": true,
+      "elapsed_seconds": 12.483330399998522,
+      "summary": "All 4 integration tests passed"
+    },
+    "phase5_security_tests": {
+      "passed": true,
+      "elapsed_seconds": 11.64304020000418,
+      "summary": "All 5 security tests passed"
+    },
+    "monorepo_regression": {
+      "passed": true,
+      "elapsed_seconds": 32.56694979999884,
+      "summary": "All 180 tests passed"
+    },
+    "hmd_engine_runtime": {
+      "passed": true,
+      "elapsed_seconds": 7.5099799999952666,
+      "bundle_id": "fcs-hmd-bundle-v1",
+      "digest": "080ef8002f9beade228efa5f965f65b9f5ba56403e46e8e372db32ed4e693a38",
+      "status": "READY"
+    }
+  },
+  "release_gate_g15": {
+    "G15.1_model_score_contract": {
+      "name": "ModelScore v1 Standardized Contract",
+      "status": "PASS",
+      "scope": "All Level 1 & Specialist Models",
+      "evidence": "Immutable ModelScore dataclass, probability bounds [0.0, 1.0], calibrated confidence, and network_action_executed = False invariant verified."
+    },
+    "G15.2_anomaly_baseline": {
+      "name": "ISP-Specific Anomaly Detection (Isolation Forest & Autoencoder)",
+      "status": "PASS",
+      "scope": "7 Simulated Rural ISP Partitions",
+      "evidence": "Trained solely on benign tenant traffic; sigmoid calibrated anomaly probabilities; zero cross-tenant contamination verified."
+    },
+    "G15.3_attack_specialists": {
+      "name": "Eligible Attack Specialists (DDoS & Scanning)",
+      "status": "PASS",
+      "scope": "LightGBM Specialists with Deployable Subsets",
+      "evidence": "DDoS specialist (PR-AUC: 0.9167), Scanning specialist (PR-AUC: 0.8931) evaluated; Botnet specialist evaluated and documented as NOT_ELIGIBLE due to FlowEvent v1 schema limits."
+    },
+    "G15.4_conditional_router": {
+      "name": "Conditional Model Router & Eligibility Check",
+      "status": "PASS",
+      "scope": "Feature-Triggered & Level 1 Probability Gating",
+      "evidence": "Short-circuits benign baseline without specialist invocations (latency: 24.9 us p95); volumetric burst routes DDoS; SYN probe routes Scanning specialist."
+    },
+    "G15.5_evidence_fusion": {
+      "name": "Deterministic Multi-Model Evidence Fusion",
+      "status": "PASS",
+      "scope": "Specialist Dominance, Weighting, Rule Floors",
+      "evidence": "Tested across Level 1 fusion, specialist dominance, deterministic rule risk floors, and missing/timeout fallback modes."
+    },
+    "G15.6_uncertainty_and_abstention": {
+      "name": "Uncertainty Quantification & Explicit Abstention",
+      "status": "PASS",
+      "scope": "Per-Model Uncertainty & Composite Evidence",
+      "evidence": "Threshold margin (|p - th| < 0.05) marks status as ABSTAIN; composite uncertainty tracked in forensics; missing models never hallucinate benign scores."
+    },
+    "G15.7_bundle_management": {
+      "name": "DetectionBundle Validation & Authorized Rollback",
+      "status": "PASS",
+      "scope": "SHA-256 Model Integrity & RBAC Authorization",
+      "evidence": "BundleValidator blocks tampered checksums; authorized activation restricted to TENANT_ADMIN / PLATFORM_ADMIN; atomic bundle rollback verified."
+    },
+    "G15.8_reliability_budgets": {
+      "name": "Specialist Timeout & General-Only Fallback",
+      "status": "PASS",
+      "scope": "Local CPU Budget (<= 100ms per model)",
+      "evidence": "Timed-out and faulted specialists produce degraded telemetry without breaking Level 1 general threat detection pipeline."
+    },
+    "G15.9_soc_integration": {
+      "name": "FastAPI Services & React Dashboard Integration",
+      "status": "PASS",
+      "scope": "End-to-End Pipeline & SOC Forensic UI",
+      "evidence": "Multi-model score attribution, routing decisions feed, ISP anomaly baselines, and bundle rollback exposed via REST API and rendered in React SOC dashboard."
+    },
+    "G15.10_safety_and_zero_cost": {
+      "name": "Manual Response Invariant & Zero-Cost Compliance",
+      "status": "PASS",
+      "scope": "Runtime Safety & Financial Enforcement",
+      "evidence": "network_action_executed = False invariant verified; AUTO mode disabled; \u20b90.00 spent across all training, inference, and benchmarks on local CPU."
+    }
+  },
+  "benchmarks_summary": {
+    "router_latency_p95_us": 24.9,
+    "general_model_f1": 0.9364,
+    "general_model_pr_auc": 0.9632,
+    "ddos_specialist_pr_auc": 0.9167,
+    "scanning_specialist_pr_auc": 0.8931,
+    "anomaly_detector_f1": 0.9364,
+    "cpu_memory_usage": "< 512 MB RSS"
+  },
+  "zero_cost_verification": {
+    "paid_cloud_services_used": 0,
+    "external_api_costs": 0.0,
+    "total_spend": "\u20b90.00",
+    "compliant": true
+  }
+}

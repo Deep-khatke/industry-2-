@@ -1,0 +1,39 @@
+version: "1.2.0"
+
+threshold_selection:
+  objective: "f1"  # "f1", "recall_at_fpr", "precision_floor"
+  target_fpr: 0.01  # Max 1% False Positive Rate for operational feasibility
+  recall_floor: 0.90
+  candidate_thresholds_count: 100
+
+calibration:
+  methods: ["sigmoid", "isotonic"]
+  default_method: "sigmoid"
+  n_bins: 10
+
+metrics:
+  binary:
+    - "pr_auc"
+    - "roc_auc"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "balanced_accuracy"
+    - "mcc"
+    - "specificity"
+    - "fpr"
+    - "fnr"
+    - "brier_score"
+    - "expected_calibration_error"
+  multiclass:
+    - "macro_f1"
+    - "weighted_f1"
+    - "macro_precision"
+    - "macro_recall"
+    - "per_class_f1"
+
+operational:
+  latency_percentiles: [50, 95, 99]
+  benchmark_batch_sizes: [1, 16, 64, 256]
+  warmup_runs: 5
+  timed_runs: 50

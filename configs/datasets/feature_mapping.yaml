@@ -1,0 +1,291 @@
+version: "1.2.0"
+mapping_name: "NetFlow v2 43 Canonical Feature to Phase 1 FlowEvent v1 Parity Mapping"
+
+research_feature_count: 43
+deployable_feature_count: 8
+
+features:
+  IPV4_SRC_ADDR:
+    data_type: "string"
+    unit: "ip_address"
+    production_availability: "DERIVABLE_WITH_VERIFIED_TRANSFORM"
+    flow_event_field: "src_prefix_masked"
+    transform: "mask_to_slash_24"
+    action_in_ml_training: "DROP_OR_MASK"
+    rationale: "Prevents testbed environment IP memorization"
+
+  IPV4_DST_ADDR:
+    data_type: "string"
+    unit: "ip_address"
+    production_availability: "DERIVABLE_WITH_VERIFIED_TRANSFORM"
+    flow_event_field: "dst_prefix_masked"
+    transform: "mask_to_slash_24"
+    action_in_ml_training: "DROP_OR_MASK"
+    rationale: "Prevents testbed victim IP memorization"
+
+  L4_SRC_PORT:
+    data_type: "int64"
+    unit: "port_number"
+    valid_range: [0, 65535]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "src_port"
+    transform: "identity"
+
+  L4_DST_PORT:
+    data_type: "int64"
+    unit: "port_number"
+    valid_range: [0, 65535]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "dst_port"
+    transform: "identity"
+
+  PROTOCOL:
+    data_type: "int64"
+    unit: "protocol_id"
+    valid_range: [0, 255]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "protocol"
+    transform: "identity"
+
+  L7_PROTO:
+    data_type: "float32"
+    unit: "proto_id"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+    transform: null
+
+  IN_BYTES:
+    data_type: "int64"
+    unit: "bytes"
+    valid_range: [0, null]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "byte_count"
+    transform: "identity"
+
+  OUT_BYTES:
+    data_type: "int64"
+    unit: "bytes"
+    valid_range: [0, null]
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+    transform: null
+
+  IN_PKTS:
+    data_type: "int64"
+    unit: "packets"
+    valid_range: [0, null]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "packet_count"
+    transform: "identity"
+
+  OUT_PKTS:
+    data_type: "int64"
+    unit: "packets"
+    valid_range: [0, null]
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+    transform: null
+
+  FLOW_DURATION_MILLISECONDS:
+    data_type: "int64"
+    unit: "milliseconds"
+    valid_range: [0, null]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "flow_duration_ms"
+    transform: "identity"
+
+  TCP_FLAGS:
+    data_type: "int64"
+    unit: "flags_mask"
+    valid_range: [0, 255]
+    production_availability: "DIRECTLY_AVAILABLE"
+    flow_event_field: "tcp_flags"
+    transform: "identity"
+
+  CLIENT_TCP_FLAGS:
+    data_type: "int64"
+    unit: "flags_mask"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  SERVER_TCP_FLAGS:
+    data_type: "int64"
+    unit: "flags_mask"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  DURATION_IN:
+    data_type: "int64"
+    unit: "milliseconds"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  DURATION_OUT:
+    data_type: "int64"
+    unit: "milliseconds"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  MIN_TTL:
+    data_type: "int64"
+    unit: "hops"
+    valid_range: [0, 255]
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  MAX_TTL:
+    data_type: "int64"
+    unit: "hops"
+    valid_range: [0, 255]
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  LONGEST_FLOW_PKT:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  SHORTEST_FLOW_PKT:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  MIN_IP_PKT_LEN:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  MAX_IP_PKT_LEN:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  SRC_TO_DST_SECOND_BYTES:
+    data_type: "float32"
+    unit: "bytes_per_sec"
+    production_availability: "DERIVABLE_WITH_VERIFIED_TRANSFORM"
+    flow_event_field: "byte_count / (flow_duration_ms / 1000)"
+
+  DST_TO_SRC_SECOND_BYTES:
+    data_type: "float32"
+    unit: "bytes_per_sec"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  RETRANSMITTED_IN_BYTES:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  RETRANSMITTED_IN_PKTS:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  RETRANSMITTED_OUT_BYTES:
+    data_type: "int64"
+    unit: "bytes"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  RETRANSMITTED_OUT_PKTS:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  SRC_TO_DST_AVG_THROUGHPUT:
+    data_type: "float32"
+    unit: "bps"
+    production_availability: "DERIVABLE_WITH_VERIFIED_TRANSFORM"
+    flow_event_field: "(byte_count * 8) / (flow_duration_ms / 1000)"
+
+  DST_TO_SRC_AVG_THROUGHPUT:
+    data_type: "float32"
+    unit: "bps"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  NUM_PKTS_UP_TO_128_BYTES:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  NUM_PKTS_128_TO_256_BYTES:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  NUM_PKTS_256_TO_512_BYTES:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  NUM_PKTS_512_TO_1024_BYTES:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  NUM_PKTS_1024_TO_1514_BYTES:
+    data_type: "int64"
+    unit: "packets"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  TCP_WIN_MAX_IN:
+    data_type: "int64"
+    unit: "window_size"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  TCP_WIN_MAX_OUT:
+    data_type: "int64"
+    unit: "window_size"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  ICMP_TYPE:
+    data_type: "int64"
+    unit: "icmp_encoded"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  ICMP_IPV4_TYPE:
+    data_type: "int64"
+    unit: "icmp_type"
+    production_availability: "REQUIRES_ADDITIONAL_EXPORT_FIELDS"
+    flow_event_field: null
+
+  DNS_QUERY_ID:
+    data_type: "int64"
+    unit: "query_id"
+    production_availability: "UNAVAILABLE"
+    flow_event_field: null
+
+  DNS_QUERY_TYPE:
+    data_type: "int64"
+    unit: "query_type"
+    production_availability: "UNAVAILABLE"
+    flow_event_field: null
+
+  DNS_TTL_ANSWER:
+    data_type: "int64"
+    unit: "seconds"
+    production_availability: "UNAVAILABLE"
+    flow_event_field: null
+
+  FTP_COMMAND_RET_CODE:
+    data_type: "float32"
+    unit: "status_code"
+    production_availability: "UNAVAILABLE"
+    flow_event_field: null

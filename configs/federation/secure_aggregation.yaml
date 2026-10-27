@@ -1,0 +1,13 @@
+# FCS-PFL Secure Aggregation (SecAgg+) Configuration
+secure_aggregation:
+  enabled: true
+  protocol: "SecAggPlusWorkflow"
+  num_shares: 7
+  reconstruction_threshold: 5
+  min_completed_contributions: 5
+  clipping_range: 8.0
+  quantization_range: 4194304  # 2^22 integer quantization
+  modulus_range: 4294967296  # 2^32 modular arithmetic field
+  timeout_seconds: 60.0
+  no_plaintext_fallback: true
+  dropout_tolerance: 2  # Allows up to 2 dropped clients (7 - 2 = 5 >= threshold)

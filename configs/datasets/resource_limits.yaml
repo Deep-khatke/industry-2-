@@ -1,0 +1,19 @@
+version: "1.2.0"
+config_name: "FCS-UDIP Safe Resource Limits and Budgets"
+
+resource_limits:
+  max_memory_mb: 2048
+  max_download_bytes: 1073741824  # 1 GiB safe default download cap
+  max_disk_space_gb: 10.0
+  batch_size: 50000
+  enable_polars_streaming: true
+  enable_disk_preflight_check: true
+  allow_unbounded_downloads: false
+
+storage_paths:
+  raw_dir: "data/raw"
+  staging_dir: "data/staging"
+  processed_dir: "data/processed"
+  manifests_dir: "data/manifests"
+  reports_dir: "data/reports"
+  synthetic_fixtures_dir: "data/synthetic-fixtures"

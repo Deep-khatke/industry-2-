@@ -1,0 +1,12 @@
+# FCS-PFL Model Evaluation and Promotion Criteria
+evaluation:
+  test_split_path: "data/processed/splits/test.parquet"
+  preprocessor_path: "data/processed/preprocessor_state.json"
+  utility_thresholds:
+    min_f1_score: 0.80
+    min_recall: 0.80
+    max_false_positive_rate: 0.20
+    min_worst_client_f1: 0.65
+  calibration_check: true
+  generalization_check: true
+  promotion_policy: "MANUAL_APPROVAL_REQUIRED"  # Automatic mode permanently prohibited

@@ -1,0 +1,13 @@
+version: "1.2.0"
+
+# Zero-Cost CPU and Memory Bounded Limits
+limits:
+  max_train_rows: 200000
+  max_validation_rows: 30000
+  max_test_rows: 30000
+  max_memory_gb: 4
+  max_cpu_workers: 2
+  mlp_max_epochs: 25
+  default_device: "cpu"
+  allow_gpu: false  # CPU-compatible execution mandated for ₹0 compliance
+  max_inference_latency_ms_p95: 50.0  # Operational threshold for real-time edge/router telemetry

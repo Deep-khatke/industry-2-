@@ -1,0 +1,39 @@
+version: "1.2.0"
+project: "Federated Cyber Shield"
+phase: 3
+
+# Data Paths
+paths:
+  dataset_dir: "data/processed/splits"
+  manifest_path: "data/processed/dataset_manifest.json"
+  preprocessor_path: "data/processed/preprocessor_state.json"
+  models_dir: "data/processed/models"
+  partitions_dir: "data/processed/partitions"
+  artifacts_dir: "artifacts"
+  candidate_models_dir: "artifacts/candidate-models"
+  experiments_dir: "artifacts/experiments"
+  metrics_dir: "artifacts/metrics"
+  plots_dir: "artifacts/plots"
+
+# Reproducibility Defaults
+random_seed: 42
+deterministic: true
+
+# Feature Experiment Tracks
+tracks:
+  research:
+    name: "RESEARCH_BENCHMARK"
+    description: "43 canonical NetFlow v2 benchmark features"
+    drop_raw_ips: true
+  deployable:
+    name: "DEPLOYABLE_SUBSET"
+    description: "14 FlowEvent v1 features verified for live streaming ingestion"
+    drop_raw_ips: true
+
+# Target Configuration
+targets:
+  binary_col: "binary_label"
+  multiclass_col: "canonical_attack_label"
+  benign_class: "Benign"
+  benign_label: 0
+  attack_label: 1

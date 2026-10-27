@@ -1,0 +1,125 @@
+version: "1.2.0"
+registry_name: "Federated Cyber Shield Unified Dataset Source Registry"
+
+sources:
+  NF-UQ-NIDS-v2:
+    dataset_id: "NF-UQ-NIDS-v2"
+    version: "2.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    rdm_uq_url: "https://rdm.uq.edu.au/files/e2412450-ef9c-11ed-827d-e762de186848"
+    publisher: "University of Queensland (UQ), Cyber Security Research Group"
+    authors: "Mohanad Sarhan, Siamak Layeghy, Marius Portmann"
+    citation: "M. Sarhan, S. Layeghy, and M. Portmann, 'Towards a Standard Feature Set for Network Intrusion Detection System Datasets', Mobile Networks and Applications, 2022."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Permitted strictly for non-commercial academic research and benchmarking with mandatory attribution citation."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v2"
+    feature_count: 43
+    parent_sources:
+      - "NF-UNSW-NB15-v2"
+      - "NF-CSE-CIC-IDS2018-v2"
+      - "NF-BoT-IoT-v2"
+      - "NF-ToN-IoT-v2"
+    parent_overlap_policy: "MUTUALLY_EXCLUSIVE_OR_DISJOINT_ONLY"
+    known_limitations:
+      - "Aggregates four testbed datasets; contains repeated automated flow sequences."
+      - "IP addresses represent isolated laboratory subnets; must be masked or dropped for generalizable ML."
+      - "Timestamp formats vary slightly across parent captures."
+
+  NF-UNSW-NB15-v2:
+    dataset_id: "NF-UNSW-NB15-v2"
+    version: "2.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    publisher: "University of Queensland & UNSW Canberra Cyber"
+    authors: "Mohanad Sarhan, Nour Moustafa, Siamak Layeghy, Marius Portmann"
+    citation: "N. Moustafa and J. Slay, 'UNSW-NB15: a comprehensive data set for network intrusion detection systems', MilCIS, 2015."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Academic research use only with citation."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v2"
+    feature_count: 43
+    parent_sources: []
+    known_limitations:
+      - "IXIA PerfectStorm synthetic attack generation; synthetic background traffic."
+
+  NF-CSE-CIC-IDS2018-v2:
+    dataset_id: "NF-CSE-CIC-IDS2018-v2"
+    version: "2.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    publisher: "University of Queensland & Communications Security Establishment (CSE) / CIC UNB"
+    authors: "Mohanad Sarhan, Arash Habibi Lashkari, Siamak Layeghy, Marius Portmann"
+    citation: "I. Sharafaldin, A. H. Lashkari, and A. A. Ghorbani, 'Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization', ICISSP, 2018."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Canadian Institute for Cybersecurity dataset terms (academic and educational use)."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v2"
+    feature_count: 43
+    parent_sources: []
+    known_limitations:
+      - "Large volume of repetitive DDoS/DoS bursts on specific victim web servers."
+
+  NF-BoT-IoT-v2:
+    dataset_id: "NF-BoT-IoT-v2"
+    version: "2.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    publisher: "University of Queensland & UNSW Canberra Cyber"
+    authors: "Mohanad Sarhan, Nickolaos Koroniotis, Siamak Layeghy, Marius Portmann"
+    citation: "N. Koroniotis et al., 'Towards the development of realistic botnet dataset in the internet of things for network forensic analytics', FGCS, 2019."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Non-commercial research use only with citation."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v2"
+    feature_count: 43
+    parent_sources: []
+    known_limitations:
+      - "Extreme class imbalance (>99% attack traffic in original capture, high density DoS/DDoS)."
+
+  NF-ToN-IoT-v2:
+    dataset_id: "NF-ToN-IoT-v2"
+    version: "2.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    publisher: "University of Queensland & UNSW Canberra Cyber"
+    authors: "Mohanad Sarhan, Abdullah Alsaedi, Siamak Layeghy, Marius Portmann"
+    citation: "A. Alsaedi et al., 'TON_IOT telemetry dataset: A new generation dataset of IoT and IIoT for data-driven security applications', IEEE Access, 2020."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Academic research and educational use only."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v2"
+    feature_count: 43
+    parent_sources: []
+    known_limitations:
+      - "Heterogeneous IoT sensors; specific application protocol artifacts."
+
+  CIC-DDoS2019:
+    dataset_id: "CIC-DDoS2019"
+    version: "1.0.0"
+    official_url: "https://www.unb.ca/cic/datasets/ddos-2019.html"
+    publisher: "Canadian Institute for Cybersecurity (UNB)"
+    authors: "Iman Sharafaldin, Amirhossein Gharib, Arash Habibi Lashkari, Ali A. Ghorbani"
+    citation: "I. Sharafaldin et al., 'Developing Realistic Distributed Denial of Service (DDoS) Attack Dataset and Taxonomy', IEEE CCGrid, 2019."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Academic research only; no redistribution of raw PCAPs; citation required."
+    commercial_use_allowed: false
+    feature_family: "CICFlowMeter-80"
+    feature_count: 80
+    parent_sources: []
+    integration_status: "SEPARATE_SPECIALIST_ONLY"
+    known_limitations:
+      - "Feature space incompatible with 43 NetFlow v2 features. Must be evaluated in separate specialist pipeline."
+
+  NetFlow-v3-Family:
+    dataset_id: "NetFlow-v3-Family"
+    version: "3.0.0"
+    official_url: "https://staff.itee.uq.edu.au/marius/NIDS_datasets/"
+    publisher: "University of Queensland"
+    authors: "Mohanad Sarhan, Siamak Layeghy, Marius Portmann"
+    citation: "M. Sarhan et al., NetFlow v3 53-feature extension documentation, 2023."
+    license_type: "RESEARCH_ONLY"
+    license_terms: "Academic research only with citation."
+    commercial_use_allowed: false
+    feature_family: "NetFlow-v3"
+    feature_count: 53
+    parent_sources: []
+    integration_status: "SEPARATELY_VERSIONED_DO_NOT_MIX"
+    known_limitations:
+      - "Contains 10 additional DPI features. Incompatible with NetFlow-v2 models without schema migration."

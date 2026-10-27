@@ -65,12 +65,20 @@ class CandidateModelRegistry:
         with open(arch_path, "w", encoding="utf-8") as f:
             json.dump(arch_config, f, indent=2)
 
+        from fcs_pfl.admission.validator import LOCKED_FEATURE_SCHEMA_DIGEST
+        from fcs_pfl.contracts.manifests import AggregationProtocol
+
         # 3. Save standard Phase 3/5 model_manifest.json
         model_manifest = {
             "model_id": candidate_id,
+            "model_family": "PyTorchMLP",
             "model_type": "pytorch_mlp",
             "framework": "pytorch",
             "feature_set": "deployable_v1",
+            "feature_track": "deployable",
+            "feature_schema_digest": LOCKED_FEATURE_SCHEMA_DIGEST,
+            "artifact_hash": weights_hash,
+            "artifact_path": str(weights_path),
             "input_dimension": model.input_dim,
             "hash": weights_hash,
             "round_id": round_id,
@@ -82,9 +90,6 @@ class CandidateModelRegistry:
             json.dump(model_manifest, f, indent=2)
 
         # 4. Save CandidateManifest contract
-        from fcs_pfl.admission.validator import LOCKED_FEATURE_SCHEMA_DIGEST
-        from fcs_pfl.contracts.manifests import AggregationProtocol
-
         candidate_manifest = CandidateManifest(
             candidate_id=candidate_id,
             round_id=round_id,

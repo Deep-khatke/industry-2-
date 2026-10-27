@@ -1,0 +1,55 @@
+name: "Phase 8 — Resilience & Fault Injection"
+
+on:
+  push:
+    branches: ["main", "feature/phase8-integration-reliability"]
+    paths:
+      - "tools/phase8/fault_injector/**"
+      - "tests/system/failure_injection/**"
+      - "tests/system/recovery/**"
+      - ".github/workflows/phase8-resilience-smoke.yml"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase8-resilience-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fault-injection:
+    name: "Resilience Matrix F01-F30 & Recovery"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: "Checkout repository code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: "Set up Python 3.11"
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install pytest pyyaml rfc8785 psutil
+
+      - name: "Run Resilience & Fault Injection Matrix (F01-F30)"
+        run: |
+          python tools/fcs_cli.py test resilience
+
+      - name: "Run Backup & Recovery Test Suite"
+        run: |
+          python -m pytest tests/system/failure_injection tests/system/recovery -v

@@ -94,7 +94,17 @@ def cmd_verify_phase4(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(prog="fcs", description="Federated Cyber Shield (FCS) Phase 4 CLI")
+    # If invoked with Phase 8 commands (verify, system, phase8, or test with orchestrator targets), delegate to orchestrator
+    if len(sys.argv) > 1 and sys.argv[1] in ("verify", "system", "phase8"):
+        from tools.phase8.orchestrator.cli import main as orch_main
+        return orch_main(sys.argv[1:])
+    if len(sys.argv) > 1 and sys.argv[1] == "test" and len(sys.argv) > 2 and sys.argv[2] in (
+        "integration", "adversarial", "resilience", "recovery", "performance", "regression", "end-to-end"
+    ):
+        from tools.phase8.orchestrator.cli import main as orch_main
+        return orch_main(sys.argv[1:])
+
+    parser = argparse.ArgumentParser(prog="fcs", description="Federated Cyber Shield (FCS) Unified CLI")
     subparsers = parser.add_subparsers(dest="command", help="Subcommand to execute")
 
     # api
@@ -121,9 +131,24 @@ def main() -> int:
     # verify-phase4
     subparsers.add_parser("verify-phase4", help="Run Phase 4 release gates and verification")
 
+    # verify
+    p_verify = subparsers.add_parser("verify", help="Verification subcommands")
+    p_verify.add_argument("target", choices=["prerequisites", "contracts", "security", "privacy", "governance", "models", "response"])
+
+    # system
+    p_system = subparsers.add_parser("system", help="System management subcommands")
+    p_system.add_argument("target", choices=["start", "status", "health", "stop"])
+
+    # phase8
+    p_phase8 = subparsers.add_parser("phase8", help="Phase 8 lifecycle and verification")
+    p_phase8.add_argument("target", choices=["run-smoke", "run-full", "report", "verify-release"])
+
     args = parser.parse_args()
 
-    if args.command == "api" and args.subaction == "start":
+    if args.command in ("verify", "system", "phase8"):
+        from tools.phase8.orchestrator.cli import main as orch_main
+        return orch_main(sys.argv[1:])
+    elif args.command == "api" and args.subaction == "start":
         return cmd_api_start(args)
     elif args.command == "demo" and args.subaction == "seed":
         return cmd_demo_seed(args)

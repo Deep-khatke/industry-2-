@@ -1,0 +1,55 @@
+# FCS Phase 8 Traffic and Integration Scenarios
+# Synthetic Replay Definitions for Multi-Tenant Testing
+
+version: "1.2.0"
+scenarios:
+  - id: "SCENARIO_NORMAL_TELEMETRY"
+    name: "Benign Baseline ISP Traffic"
+    description: "Multi-tenant continuous traffic without anomalous burst or scanning signatures."
+    flow_count: 500
+    expected_incidents: 0
+    tenants: ["rural-isp-alpha", "rural-isp-bravo"]
+    traffic_profile:
+      syn_ratio: 0.15
+      bytes_per_flow_mean: 1420
+      packets_per_flow_mean: 12
+      duration_seconds: 5
+
+  - id: "SCENARIO_VOLUMETRIC_DDOS"
+    name: "Volumetric UDP/SYN Flood Attack"
+    description: "High packet rate exceeding Level 1 trigger and activating DDoS specialist model."
+    flow_count: 1200
+    expected_incidents: 1
+    tenants: ["rural-isp-alpha"]
+    traffic_profile:
+      syn_ratio: 0.92
+      packet_rate_per_sec: 4500
+      target_ip: "192.168.10.45"
+      anomaly_type: "volumetric_flood"
+
+  - id: "SCENARIO_DISTRIBUTED_PORT_SCAN"
+    name: "Horizontal Port Reconnaissance"
+    description: "Low-and-slow port sweep triggering scanning specialist model."
+    flow_count: 350
+    expected_incidents: 1
+    tenants: ["rural-isp-bravo"]
+    traffic_profile:
+      unique_dst_ports: 85
+      flow_duration_mean: 0.05
+      anomaly_type: "syn_port_scan"
+
+  - id: "SCENARIO_OUT_OF_ORDER_AND_DUPLICATE"
+    name: "Network Jitter, Replay, and Sequence Gaps"
+    description: "Flow events delivered out of sequence with duplicates and delayed records."
+    flow_count: 400
+    duplicate_ratio: 0.15
+    out_of_order_ratio: 0.20
+    expected_deduplicated_count: 340
+    tenants: ["rural-isp-charlie"]
+
+  - id: "SCENARIO_CROSS_TENANT_ISOLATION"
+    name: "Multi-Tenant Concurrent Replay"
+    description: "Simultaneous traffic for all 7 ISP partitions verifying complete boundary separation."
+    flow_count_per_tenant: 200
+    total_tenants: 7
+    expected_leakage: 0

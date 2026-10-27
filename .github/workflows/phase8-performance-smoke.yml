@@ -1,0 +1,44 @@
+name: "Phase 8 — Performance & Capacity Smoke"
+
+on:
+  push:
+    branches: ["main", "feature/phase8-integration-reliability"]
+    paths:
+      - "tools/phase8/metrics_collector/**"
+      - "tests/system/performance/**"
+      - ".github/workflows/phase8-performance-smoke.yml"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase8-performance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance-benchmarks:
+    name: "Performance Profiles P0-P4 Verification"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: "Checkout repository code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: "Set up Python 3.11"
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy psutil pytest pyyaml
+
+      - name: "Run Performance & Capacity Benchmarks"
+        run: |
+          python tools/fcs_cli.py test performance
+          python -m pytest tests/system/performance -v

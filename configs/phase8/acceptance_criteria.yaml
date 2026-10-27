@@ -1,0 +1,130 @@
+# FCS Phase 8 Acceptance Criteria Matrix
+# Defines Pass/Partial/Fail/Blocked boundaries for Objectives O1-O10 and Gates G01-G15
+
+version: "1.2.0"
+objectives:
+  - id: "O1"
+    name: "Full Integration"
+    criteria: "All Phase 1-7 adjacent interfaces communicate through versioned contracts without schema mismatch."
+    verification_type: "AUTOMATED_CONTRACT_TESTS"
+
+  - id: "O2"
+    name: "End-to-End Detection"
+    criteria: "Ingestion -> FlowEvent -> FeatureWindow -> Inference -> Fusion -> Incident -> API -> Dashboard -> Manual Response."
+    verification_type: "SYSTEM_INTEGRATION_TESTS"
+
+  - id: "O3"
+    name: "Privacy & Tenant Isolation"
+    criteria: "Complete isolation across 7 simulated ISPs; no cross-tenant read/write; federated DP and SecAgg+ verified."
+    verification_type: "SECURITY_TESTS"
+
+  - id: "O4"
+    name: "Model Integrity"
+    criteria: "Corrupted, mismatched, expired, revoked, or unauthorized model artifacts rejected."
+    verification_type: "INTEGRITY_TESTS"
+
+  - id: "O5"
+    name: "Blockchain Governance Reliability"
+    criteria: "Release approval, 3-of-4 endorsement, dual-signing, rollback safety, and ledger outage recovery verified."
+    verification_type: "GOVERNANCE_TESTS"
+
+  - id: "O6"
+    name: "Adversarial Security"
+    criteria: "Safe execution of input manipulation, expired auth, IDOR, role escalation, and AUTO rejection suites."
+    verification_type: "ADVERSARIAL_TESTS"
+
+  - id: "O7"
+    name: "Failure Recovery"
+    criteria: "Verified recovery across faults F01-F30, idempotency under replay, and zero data loss on restart."
+    verification_type: "RESILIENCE_TESTS"
+
+  - id: "O8"
+    name: "Performance"
+    criteria: "Nominal load (1400 flows/s across 7 ISPs) and burst profiled; p95 window-to-incident <= 5s target measured."
+    verification_type: "BENCHMARK_TESTS"
+
+  - id: "O9"
+    name: "CI/CD Validation"
+    criteria: "GitHub Actions workflows validated with zero-cost runners, pinned actions, and least-privilege tokens."
+    verification_type: "CICD_TESTS"
+
+  - id: "O10"
+    name: "Evidence & Handoff"
+    criteria: "Complete auditable verification bundle, reports, and Phase 9 Manual ISP pilot handoff prepared."
+    verification_type: "RELEASE_BUNDLE"
+
+release_gates:
+  - id: "G01"
+    name: "Trust Boundaries & Multi-Tenancy"
+    scope: "Simulated 7-tenant boundary enforcement in local runtime."
+    production_gap: "Independent AWS account isolation and VPC peering unverified."
+
+  - id: "G02"
+    name: "Telemetry Ingestion Integrity"
+    scope: "IPFIX/NetFlow parser resilience, template handling, sequence tracking."
+    production_gap: "Live hardware border router export unverified."
+
+  - id: "G03"
+    name: "Delivery & Idempotency"
+    scope: "Durable SQLite incident state, deterministic event_id deduplication."
+    production_gap: "Cloud distributed Kinesis/Kafka message bus unverified."
+
+  - id: "G04"
+    name: "Learning Privacy"
+    scope: "SecAgg+ 5-of-7 quorum and Opacus DP-SGD gradient clipping."
+    production_gap: "Cross-WAN network latency and real ISP worker isolation unverified."
+
+  - id: "G05"
+    name: "Differential Privacy Accounting"
+    scope: "Persistent RDP accountant, epsilon exhaustion fail-closed behavior."
+    production_gap: "Subscriber-level privacy unit requires real ISP user mapping."
+
+  - id: "G06"
+    name: "Model Safety"
+    scope: "Schema validation, artifact hashing, feature alignment, version rejection."
+    production_gap: "Continuous online model drift monitoring unverified."
+
+  - id: "G07"
+    name: "Detection Utility"
+    scope: "Held-out test set performance, precision/recall, calibration."
+    production_gap: "Requires 7-day shadow monitoring on real ISP live telemetry."
+
+  - id: "G08"
+    name: "Manual Response Safety"
+    scope: "Human approval check, target whitelisting, simulator verification."
+    production_gap: "Live router BGP Flowspec and NETCONF automation unverified."
+
+  - id: "G09"
+    name: "Reliability & Degradation"
+    scope: "Decoupled detection, graceful degradation on component outage, backup restore."
+    production_gap: "Multi-region disaster failover unverified."
+
+  - id: "G10"
+    name: "Consortium Ledger"
+    scope: "SmartBFT quorum, 3-of-4 endorsement, outbox reconciliation."
+    production_gap: "Multi-organization live cloud Fabric nodes unverified."
+
+  - id: "G11"
+    name: "Supply Chain & Crypto"
+    scope: "RFC 8785 canonicalization, ECDSA + ML-DSA-65 dual signatures, two-person integrity."
+    production_gap: "Hardware HSM air-gapped private key storage unverified."
+
+  - id: "G12"
+    name: "Quantum Research Isolation"
+    scope: "Static access boundary enforcement, simulated quantum interface isolation."
+    production_gap: "Actual QPU / quantum hardware workloads are unrun."
+
+  - id: "G13"
+    name: "AUTO Authorization Safety"
+    scope: "Attempt to enable AUTO response is strictly blocked and rejected."
+    production_gap: "AUTO response is NOT_ENABLED and pending independent qualification."
+
+  - id: "G14"
+    name: "Dataset Integrity"
+    scope: "Locked feature schemas, train/test split isolation, provenance hashes."
+    production_gap: "Continuous real-world dataset drift pipeline unverified."
+
+  - id: "G15"
+    name: "Hierarchical ML Reliability"
+    scope: "Multi-model routing, specialist timeouts, fallback to rules, fusion discordance."
+    production_gap: "Production load-balanced model inference server unverified."

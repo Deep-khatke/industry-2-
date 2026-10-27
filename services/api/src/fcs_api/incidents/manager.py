@@ -118,9 +118,9 @@ class IncidentManager:
                     risk_score,
                     target_ip,
                     target_port,
-                    json.dumps(evidence),
+                    json.dumps(evidence, default=str),
                     "1.2.0",
-                    json.dumps(detection_result.get("rule_matches", [])),
+                    json.dumps(detection_result.get("rule_matches", []), default=str),
                     now_str,
                     now_str,
                 ),
@@ -204,6 +204,9 @@ class IncidentManager:
                 raise ValueError(f"Incident '{incident_id}' not found.")
 
             current_status = row["status"]
+            if current_status == new_status:
+                return dict(row)
+
             allowed = VALID_TRANSITIONS.get(current_status, set())
             if new_status not in allowed:
                 raise ValueError(

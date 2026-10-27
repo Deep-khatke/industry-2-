@@ -1,0 +1,40 @@
+# FCS Phase 8 Resource Limits Configuration
+# Safe Development and Free Runner Constraints
+
+version: "1.2.0"
+execution_environment:
+  max_memory_mb: 2048
+  max_cpu_percent: 85
+  max_disk_mb: 1024
+  max_execution_timeout_seconds: 300
+  allowed_thread_concurrency: 4
+
+workload_profiles:
+  p0_smoke:
+    flows: 100
+    duration_seconds: 2
+    max_memory_mb: 256
+    target_throughput_fps: 50
+
+  p1_developer:
+    flows: 500
+    duration_seconds: 5
+    max_memory_mb: 512
+    target_throughput_fps: 100
+
+  p2_nominal_planning:
+    flows: 2800  # 2 seconds @ 1400 flows/sec across 7 ISPs (200 fps/ISP)
+    duration_seconds: 2
+    max_memory_mb: 1024
+    target_throughput_fps: 1400
+
+  p3_burst:
+    flows: 5000  # Burst load
+    duration_seconds: 3
+    max_memory_mb: 1536
+    target_throughput_fps: 2000
+
+  p4_recovery:
+    flows: 1000
+    fault_id: "F01"
+    recovery_window_seconds: 5

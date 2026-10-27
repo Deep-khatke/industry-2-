@@ -154,14 +154,17 @@ class CandidateModelRegistry:
         models = []
         for d in self.registry_dir.iterdir():
             if d.is_dir() and (d / "model_manifest.json").exists():
-                m = ModelManifest.from_file(str(d / "model_manifest.json"))
-                models.append({
-                    "model_id": m.model_id,
-                    "model_family": m.model_family,
-                    "feature_track": m.feature_track,
-                    "threshold": m.validation_threshold,
-                    "f1": m.test_metrics.get("f1", 0.0),
-                    "pr_auc": m.test_metrics.get("pr_auc", 0.0),
-                    "fpr": m.test_metrics.get("fpr", 0.0),
-                })
+                try:
+                    m = ModelManifest.from_file(str(d / "model_manifest.json"))
+                    models.append({
+                        "model_id": m.model_id,
+                        "model_family": m.model_family,
+                        "feature_track": m.feature_track,
+                        "threshold": m.validation_threshold,
+                        "f1": m.test_metrics.get("f1", 0.0),
+                        "pr_auc": m.test_metrics.get("pr_auc", 0.0),
+                        "fpr": m.test_metrics.get("fpr", 0.0),
+                    })
+                except Exception:
+                    continue
         return models

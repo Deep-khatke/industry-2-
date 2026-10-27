@@ -1,0 +1,52 @@
+# Federated Cyber Shield (FCS) v1.2 — Phase 8 Environment Configuration
+# Strictly ₹0 / $0 Budget — Open Source Development & Free Runner Policy
+
+schema_version: "1.2.0"
+phase: 8
+timestamp: "2026-10-27T00:00:00Z"
+cost_limit_inr: 0.0
+cost_limit_usd: 0.0
+
+profiles:
+  profile_a:
+    name: "PROFILE_A_UNIT_AND_CONTRACTS"
+    description: "Fast in-memory unit, contract, and schema validation with no external daemons."
+    database: "sqlite:///:memory:"
+    collector_mode: "in_memory"
+    feature_window_store: "memory"
+    governance_mode: "mock_embedded"
+    federation_mode: "simulated_local"
+    target_runners: ["github_actions_ubuntu_latest", "local_dev"]
+    max_execution_time_seconds: 60
+    allow_network_calls: false
+
+  profile_b:
+    name: "PROFILE_B_FULL_DEV_INTEGRATION"
+    description: "Full local development integration running all available Phase 1-7 subsystems together."
+    database: "sqlite:///data/fcs_phase8_dev.db"
+    outbox_database: "sqlite:///data/governance_outbox_p8.db"
+    ledger_database: "sqlite:///data/fabric_ledger_p8.db"
+    privacy_accountant_store: "data/privacy_accountant_p8.json"
+    api_host: "127.0.0.1"
+    api_port: 8000
+    collector_host: "127.0.0.1"
+    collector_port: 2055
+    dashboard_port: 5173
+    tenants:
+      - "rural-isp-alpha"
+      - "rural-isp-bravo"
+      - "rural-isp-charlie"
+      - "rural-isp-delta"
+      - "rural-isp-echo"
+      - "rural-isp-foxtrot"
+      - "rural-isp-golf"
+    max_execution_time_seconds: 300
+    allow_network_calls: false
+
+  profile_c:
+    name: "PROFILE_C_PRODUCTION_EQUIVALENT_PLAN"
+    description: "Specification of production environment requirements requiring independent cloud accounts and real ISP infrastructure."
+    status: "BLOCKED_BY_ZERO_COST_POLICY"
+    reason: "Requires billable multi-AZ cloud streams, hardware HSM key storage, real ISP border routers, and multi-cloud BFT ordering nodes."
+    cost_estimate_usd_monthly: 4200.0
+    execution_permitted: false

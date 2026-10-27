@@ -1,0 +1,67 @@
+name: "Phase 8 — Release Readiness & Gate Audit"
+
+on:
+  push:
+    branches: ["main", "feature/phase8-integration-reliability"]
+    paths:
+      - "scripts/verify_phase8.py"
+      - "configs/phase8/**"
+      - "phase8_status.json"
+      - ".github/workflows/phase8-release-readiness.yml"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase8-readiness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit-release-gates:
+    name: "Audit Release Gates G01-G15 & Zero-Cost Compliance"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: "Checkout repository code"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: "Set up Python 3.11"
+        uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install pytest pyyaml rfc8785 psutil numpy
+
+      - name: "Run Complete Phase 8 Verification Program"
+        run: |
+          python scripts/verify_phase8.py
+
+      - name: "Run Phase 8 Experiment Program (E8-01 to E8-25)"
+        run: |
+          python scripts/run_phase8_experiments.py
+
+      - name: "Verify ₹0 Zero-Cost Budget & Manual Mode Invariants"
+        run: |
+          python -c "
+          import json
+          with open('phase8_status.json') as f:
+              st = json.load(f)
+          assert st['zero_cost_budget'].startswith('STRICTLY ₹0 / $0')
+          assert st['response_mode'].startswith('MANUAL_ONLY')
+          assert st['network_action_executed'] is False
+          print('CI Zero-Cost and Safety Invariants Verified.')
+          "

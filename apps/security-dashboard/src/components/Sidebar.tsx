@@ -42,6 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'health', label: 'ISP Network Health', icon: Radio },
     { id: 'models', label: 'Model Monitoring', icon: Cpu },
     { id: 'federation', label: 'Federated Learning', icon: Share2 },
+    { id: 'governance', label: 'Consortium Governance', icon: ShieldAlert },
     { id: 'settings', label: 'Settings & Policy', icon: Settings },
   ];
 

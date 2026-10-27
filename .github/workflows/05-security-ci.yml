@@ -1,0 +1,49 @@
+name: 05-Security-CI
+
+on:
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-supply-chain-checks:
+    name: Security Tests & Release Authorization Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dilithium-py rfc8785
+
+      - name: Check for Accidentally Committed Secrets
+        run: |
+          # Verify no private keys or secrets in repository
+          if git grep -E "(BEGIN (RSA|EC|OPENSSH|DSA|PRIVATE) KEY|AWS_SECRET_ACCESS_KEY)" -- ':!.github/*' ':!tests/*'; then
+            echo "ERROR: Potential private key or secret found in repository!"
+            exit 1
+          else
+            echo "SUCCESS: No secrets detected in committed code."
+          fi
+
+      - name: Run Governance Security Tests
+        run: |
+          python -m pytest tests/governance-security tests/phase4-security tests/federation-security -v

@@ -1,0 +1,47 @@
+name: 07-Governance-Release-Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_id:
+        description: "Candidate model ID to validate"
+        required: true
+        default: "candidate_exp_e6_06"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'artifacts/candidate-models/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-val-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-release-metadata:
+    name: Candidate Release Integrity & Metadata Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dilithium-py rfc8785
+
+      - name: Validate Candidate Artifacts & Manifest Integrity
+        run: |
+          python tools/fcs_gov.py verify-prerequisites
+          python tools/fcs_gov.py crypto test
+          echo "Candidate release verification PASSED. Human and consortium authorization required for activation."

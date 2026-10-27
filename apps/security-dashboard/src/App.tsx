@@ -8,6 +8,7 @@ import { ManualResponsePage } from './pages/ManualResponsePage';
 import { NetworkHealthPage } from './pages/NetworkHealthPage';
 import { ModelMonitoringPage } from './pages/ModelMonitoringPage';
 import { FederationPage } from './pages/FederationPage';
+import { GovernancePage } from './pages/GovernancePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { api } from './services/api';
 import {
@@ -371,6 +372,14 @@ export const App: React.FC = () => {
       title: 'ML Model Monitoring & Provenance',
       subtitle: 'Phase 3 LightGBM candidate evaluation, feature contracts, and runtime limits',
     },
+    federation: {
+      title: 'Federated Learning Operations',
+      subtitle: 'Flower SecAgg+ & Opacus DP-SGD Multi-Tenant Privacy Engine',
+    },
+    governance: {
+      title: 'Consortium Trust & Blockchain Governance',
+      subtitle: 'Hyperledger Fabric SmartBFT, NIST FIPS 204 ML-DSA-65 & Model Supply Chain',
+    },
     settings: {
       title: 'Tenant Settings & Response Safety',
       subtitle: 'RBAC permissions matrix, protected infrastructure, and policy rules',
@@ -482,6 +491,8 @@ export const App: React.FC = () => {
           )}
 
           {currentTab === 'federation' && <FederationPage />}
+
+          {currentTab === 'governance' && <GovernancePage />}
 
           {currentTab === 'settings' && (
             <SettingsPage

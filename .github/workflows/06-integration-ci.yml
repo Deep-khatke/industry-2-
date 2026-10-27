@@ -1,0 +1,39 @@
+name: 06-Integration-CI
+
+on:
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance-integration-tests:
+    name: End-to-End Governance & Ledger Recovery Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dilithium-py rfc8785
+
+      - name: Run Recovery and End-to-End Governance Tests
+        run: |
+          python -m pytest tests/governance-recovery tests/governance-integration -v

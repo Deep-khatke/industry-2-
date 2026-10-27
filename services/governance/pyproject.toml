@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fcs-governance"
+version = "1.2.0"
+description = "Consortium Blockchain, Post-Quantum Cryptography and Model Governance for Federated Cyber Shield"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0.0",
+    "cryptography>=41.0.0",
+    "dilithium-py>=1.5.0",
+    "rfc8785>=0.1.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

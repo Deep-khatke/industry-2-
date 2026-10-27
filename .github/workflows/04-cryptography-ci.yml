@@ -1,0 +1,42 @@
+name: 04-Cryptography-CI
+
+on:
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crypto-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dual-cryptography-tests:
+    name: RFC 8785, ECDSA P-256 & ML-DSA-65 Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Cryptographic Libraries
+        run: |
+          pip install cryptography>=42.0.0 dilithium-py rfc8785 pydantic pytest
+
+      - name: Run Cryptographic Unit Tests
+        run: |
+          python -m pytest tests/governance-unit/test_canonical_json.py \
+                           tests/governance-unit/test_conventional_crypto.py \
+                           tests/governance-unit/test_post_quantum_crypto.py \
+                           tests/governance-unit/test_dual_signature.py \
+                           tests/governance-unit/test_trust_store.py -v

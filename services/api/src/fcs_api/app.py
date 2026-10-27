@@ -4,6 +4,17 @@ import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
+import sys
+
+# Bootstrap internal services path
+_project_root = Path(__file__).resolve().parents[4]
+for _src in [
+    _project_root / "services" / "federated-learning" / "src",
+    _project_root / "services" / "governance" / "src",
+    _project_root / "services" / "ml_training" / "src",
+]:
+    if str(_src) not in sys.path:
+        sys.path.insert(0, str(_src))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +28,7 @@ from .routes.detection import router as detection_router
 from .routes.dev import router as dev_router
 from .routes.federation import dev_router as federation_dev_router
 from .routes.federation import router as federation_router
+from .routes.governance import router as governance_router
 from .routes.incidents import router as incidents_router
 from .routes.overview import router as overview_router
 from .routes.response_policy import router as response_policy_router
@@ -72,6 +84,7 @@ app.include_router(response_policy_router)
 app.include_router(dev_router)
 app.include_router(federation_router)
 app.include_router(federation_dev_router)
+app.include_router(governance_router)
 
 
 @app.get("/healthz", tags=["System"])

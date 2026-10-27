@@ -1,0 +1,42 @@
+name: 08-Phase7-Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase7-verif-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-phase7-verification:
+    name: Complete Phase 7 Verification & Gate Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dilithium-py rfc8785
+
+      - name: Run Full Governance Test Matrix
+        run: |
+          python -m pytest tests/governance-unit tests/governance-security tests/governance-recovery tests/governance-integration -v
+
+      - name: Execute Phase 7 Verification Script
+        run: |
+          python scripts/verify_phase7.py

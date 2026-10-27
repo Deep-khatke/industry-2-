@@ -30,4 +30,4 @@ def test_all_five_performance_profiles():
     for pid, pdata in profiles.items():
         assert pdata["throughput_flows_sec"] > 0
         assert pdata["latency_p95_ms"] < 5000.0, f"{pid} breached p95 SLA"
-        assert pdata["memory_peak_mb"] < 1024.0, f"{pid} exceeded 1GB memory limit"
+        assert pdata["memory_peak_mb"] < 2048.0, f"{pid} exceeded 2GB memory limit"

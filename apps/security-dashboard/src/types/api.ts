@@ -277,3 +277,124 @@ export interface ResponsePolicy {
   idempotency_enforced: boolean;
   rollback_supported: boolean;
 }
+
+// Phase 9 Pilot Types
+export interface PilotStatus {
+  service: string;
+  phase: number;
+  phase_name: string;
+  pilot_id: string;
+  tenant_id: string;
+  isp_display_name: string;
+  environment_mode: string;
+  onboarding_status: string;
+  zero_cost_budget: string;
+  response_mode: string;
+  network_action_executed: boolean;
+  default_execution_engine: string;
+  server_enforced_shadow_mode: boolean;
+  active_model_version: string;
+  blocker_reason?: string | null;
+}
+
+export interface GateRecord {
+  gate_id: string;
+  name: string;
+  category: string;
+  status: 'PASS' | 'PARTIAL' | 'FAIL' | 'BLOCKED' | 'NOT_RUN';
+  reviewer_role: string;
+  evidence: string;
+  production_limitation?: string | null;
+  blocker?: string | null;
+  risk_level: string;
+  recommended_next_step: string;
+}
+
+export interface PilotReadinessSummary {
+  pilot_id: string;
+  tenant_id: string;
+  environment_mode: string;
+  total_gates_evaluated: number;
+  passed_count: number;
+  partial_count: number;
+  blocked_count: number;
+  failed_count: number;
+  gates: Record<string, GateRecord>;
+  architecture_gates_g01_to_g15: Record<string, { name: string; status: string; note?: string }>;
+  final_readiness_decision: string;
+  live_pilot_authorization_status: string;
+  zero_cost_verified: boolean;
+  auto_response_enabled: boolean;
+}
+
+export interface DailyReportRecord {
+  day_index: number;
+  calendar_date: string;
+  scenario_type: string;
+  total_flows_received: number;
+  valid_flows: number;
+  rejected_flows: number;
+  late_flows: number;
+  sequence_gaps: number;
+  exporter_coverage_percent: number;
+  model_scored_windows: number;
+  unscored_windows: number;
+  candidate_incidents: number;
+  analyst_confirmed_incidents: number;
+  false_positives: number;
+  unresolved_incidents: number;
+  analyst_review_time_minutes: number;
+  model_latency_p95_ms: number;
+  model_latency_p99_ms: number;
+  processing_lag_seconds: number;
+}
+
+export interface SevenDayReport {
+  pilot_id: string;
+  tenant_id: string;
+  evaluation_type: string;
+  start_date: string;
+  end_date: string;
+  days_completed: number;
+  daily_records: DailyReportRecord[];
+  total_flows_processed: number;
+  total_candidate_incidents: number;
+  total_confirmed_true_positives: number;
+  total_confirmed_false_positives: number;
+  average_false_incidents_per_day: number;
+  target_met_le_5_false_per_day: boolean;
+  average_analyst_review_minutes_per_day: number;
+  analyst_capacity_target_met: boolean;
+  overall_detection_coverage_percent: number;
+  recommendation: string;
+}
+
+export interface AnalystWorkloadData {
+  tenant_id: string;
+  triage_summary: {
+    tenant_id: string;
+    total_reviewed: number;
+    true_positives: number;
+    false_positives: number;
+    benign_unusual: number;
+    inconclusive: number;
+    avg_review_duration_seconds: number;
+    total_review_minutes: number;
+  };
+  false_alert_metrics: {
+    tenant_id: string;
+    days_evaluated: number;
+    total_grouped_incidents: number;
+    confirmed_false_positives: number;
+    false_positives_per_day: number;
+    target_threshold_per_day: number;
+    target_met: boolean;
+    confidence_interval_95: [number, number];
+    total_analyst_triage_minutes: number;
+    avg_triage_minutes_per_day: number;
+    analyst_capacity_budget_minutes_per_day: number;
+    analyst_budget_satisfied: boolean;
+    status_summary: string;
+  };
+}
+

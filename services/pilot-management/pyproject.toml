@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fcs-pilot"
+version = "1.2.0"
+description = "Real ISP Pilot, Shadow Detection, Manual Response & Operational Readiness for Federated Cyber Shield"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0.0",
+    "numpy>=1.24.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,145 @@
+# FCS Phase 9 Pilot Readiness Gates (R01 to R23)
+# Based on Architecture v1.2 & Phase 9 Specification
+
+readiness_gates:
+  version: "1.2.0"
+  description: "Comprehensive release and operational readiness evaluator for ISP Pilot"
+  gates:
+    R01:
+      name: "ISP Authorization & Written Agreement"
+      category: "GOVERNANCE"
+      required_for_mode_a: false
+      required_for_mode_b: true
+      description: "Signed authorization, approved technical contact, defined scope, and zero-cost commitment."
+    R02:
+      name: "Approved Telemetry Scope"
+      category: "TELEMETRY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Explicitly defined observation domain IDs, export interfaces, and network prefixes."
+    R03:
+      name: "Data Ownership & Retention Policy"
+      category: "PRIVACY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Documented tenant-scoped retention policies (max 7-day raw flow, 90-day incident)."
+    R04:
+      name: "Exporter Compatibility & Capability Registration"
+      category: "NETWORK"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Verified parser templates, observation domain binding, sequence tracking, and frequency."
+    R05:
+      name: "Network Connection Security"
+      category: "SECURITY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Exporter authentication, source IP verification, IPSec/TLS transport validation."
+    R06:
+      name: "Tenant Isolation Boundaries"
+      category: "SECURITY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Cryptographic tenant scoping, no IDOR leakage, tenant-scoped incident and action stores."
+    R07:
+      name: "FeatureSpec Parity Verification"
+      category: "ML_ENGINEERING"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "14 locked deployable features derived without zero-filling or imputation artifacts."
+    R08:
+      name: "Verified Model Artifacts & Dual Signatures"
+      category: "ML_ENGINEERING"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Dual ECDSA P-256 + ML-DSA-65 post-quantum signed manifests with RFC 8785 canonicalization."
+    R09:
+      name: "Hierarchical Detection (FCS-HMD) Utility"
+      category: "ML_ENGINEERING"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Calibrated multi-model scoring, specialist routing, graceful timeout fallback to rules."
+    R10:
+      name: "Incident Delivery & Deduplication"
+      category: "OPERATIONS"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Durable ACID outbox event persistence, idempotent incident generation, duplicate suppression."
+    R11:
+      name: "Analyst / Operator Ownership & Triage"
+      category: "OPERATIONS"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Role-based incident review workflow, analyst assignment, disposition recording."
+    R12:
+      name: "Manual Response Safety & Policy Engine"
+      category: "SAFETY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Human dual-authorization, duration bounds (60s-3600s), simulator execution default."
+    R13:
+      name: "Audit Logging & Action Journal"
+      category: "COMPLIANCE"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Append-only cryptographic audit journal recording all operator actions and dispositions."
+    R14:
+      name: "Operational Health Monitoring & Escalation"
+      category: "OPERATIONS"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Telemetry lag, sequence gaps, exporter freshness, and emergency pause procedures."
+    R15:
+      name: "Backup & Restore Development Verification"
+      category: "RELIABILITY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Verified database backup, isolated restore, checksum validation, and state reconciliation."
+    R16:
+      name: "Recovery & Model Rollback"
+      category: "RELIABILITY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Graceful rollback to previous compatible model bundle within <= 5 minutes."
+    R17:
+      name: "Subscriber Privacy & DP Accounting"
+      category: "PRIVACY"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Differential privacy accounting (Opacus DP-SGD epsilon <= 10.0), no raw telemetry leakage."
+    R18:
+      name: "Cryptographic & Release Governance"
+      category: "GOVERNANCE"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Consortium ledger state compatibility, SmartBFT endorsement quorum verification."
+    R19:
+      name: "CI/CD Integrity & Automation Security"
+      category: "DEVSECOPS"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Pinned GitHub Actions SHAs, read-only workflow permissions, zero-cost standard runners."
+    R20:
+      name: "Strict Zero-Cost Policy Compliance"
+      category: "FINANCIAL"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Verified ₹0 / $0 spend. No paid cloud VMs, databases, SIEM, or credit-card trials."
+    R21:
+      name: "Independent Security & Pentest Review"
+      category: "SECURITY"
+      required_for_mode_a: false
+      required_for_mode_b: true
+      description: "Third-party penetration testing and post-quantum cryptographic review."
+    R22:
+      name: "Live 7-Day Shadow Monitoring Evidence"
+      category: "EVALUATION"
+      required_for_mode_a: false
+      required_for_mode_b: true
+      description: "Seven consecutive days of verified live un-curated ISP shadow monitoring data."
+    R23:
+      name: "Pilot Closure & Data Handling Plan"
+      category: "COMPLIANCE"
+      required_for_mode_a: true
+      required_for_mode_b: true
+      description: "Documented decommissioning procedures, secure telemetry deletion, audit archive."

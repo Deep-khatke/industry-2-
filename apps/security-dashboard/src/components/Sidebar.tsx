@@ -12,6 +12,7 @@ import {
   User,
   LogOut,
   Building2,
+  Eye,
 } from 'lucide-react';
 import { Tenant, User as UserType } from '../types/api';
 
@@ -36,6 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { id: 'overview', label: 'Security Overview', icon: Activity },
+    { id: 'pilot', label: 'ISP Pilot Operations', icon: Eye },
     { id: 'threats', label: 'Threat Monitoring', icon: Flame },
     { id: 'incidents', label: 'Incident Management', icon: AlertTriangle },
     { id: 'actions', label: 'Manual Response Center', icon: ShieldAlert },
@@ -45,6 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'governance', label: 'Consortium Governance', icon: ShieldAlert },
     { id: 'settings', label: 'Settings & Policy', icon: Settings },
   ];
+
 
   const currentTenant = tenants.find((t) => t.tenant_id === selectedTenantId);
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { OverviewPage } from './pages/OverviewPage';
+import { PilotOperationsPage } from './pages/PilotOperationsPage';
 import { ThreatMonitoringPage } from './pages/ThreatMonitoringPage';
 import { IncidentsPage } from './pages/IncidentsPage';
 import { ManualResponsePage } from './pages/ManualResponsePage';
@@ -433,6 +434,10 @@ export const App: React.FC = () => {
               onNavigateToIncidents={() => setCurrentTab('incidents')}
               onNavigateToResponse={() => setCurrentTab('actions')}
             />
+          )}
+
+          {currentTab === 'pilot' && (
+            <PilotOperationsPage selectedTenantId={selectedTenantId} />
           )}
 
           {currentTab === 'threats' && (

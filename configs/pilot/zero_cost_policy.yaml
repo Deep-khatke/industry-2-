@@ -1,0 +1,34 @@
+# FCS Phase 9 Zero-Cost Budget Policy
+# Non-negotiable ₹0 / $0 spend limit
+
+zero_cost_policy:
+  version: "1.2.0"
+  total_allowed_spend_inr: 0.0
+  total_allowed_spend_usd: 0.0
+  enforcement_mode: "STRICT_PROHIBITION"
+
+  strictly_prohibited:
+    - "Paid AWS services (EC2, ECS, EKS, RDS, S3, MSK, OpenSearch, etc.)"
+    - "Paid Azure services (VMs, Azure SQL, Cosmos, etc.)"
+    - "Paid Google Cloud services (GCE, GKE, Cloud SQL, etc.)"
+    - "Paid virtual machines and dedicated servers"
+    - "Paid cloud databases and storage"
+    - "Paid networking, transit, and public IP allocations"
+    - "Paid VPN and tunnel services"
+    - "Paid monitoring and commercial SIEM platforms (Splunk, Datadog, etc.)"
+    - "Paid messaging and push notification providers"
+    - "Paid GPU and cloud inference APIs (OpenAI API, Anthropic API, etc.)"
+    - "Credit-card backed trials and promotional-credit infrastructure"
+    - "Premium GitHub Actions runners and paid CI minutes"
+
+  permitted_resources:
+    - "Existing local developer workspace and CPU resources"
+    - "Free open-source software (Python, SQLite, React, Vite, FastAPI, PyTorch, Scikit-learn)"
+    - "Existing authorized development test processes"
+    - "Free GitHub Actions standard runners (ubuntu-latest standard tier only)"
+    - "Local SQLite development databases"
+    - "Synthetic network telemetry generation"
+    - "Public open-access research datasets per licenses (e.g. CSE-CIC-IDS2018)"
+
+  live_pilot_invariant:
+    rule: "If zero-cost live infrastructure cannot be verified, mark LIVE_PILOT_BLOCKED and complete pilot readiness purely through synthetic validation."

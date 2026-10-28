@@ -1,0 +1,41 @@
+name: "Phase 9 — Shadow Detection & 7-Day Replay"
+
+on:
+  push:
+    branches: ["main", "feature/phase9-isp-pilot"]
+    paths:
+      - "services/pilot-management/src/fcs_pilot/shadow_monitoring/**"
+      - "services/pilot-management/src/fcs_pilot/metrics/**"
+      - "tests/pilot-integration/test_shadow_detection_pipeline.py"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-shadow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-shadow-detection:
+    name: "Validate Shadow Monitoring & 7-Day Replay Evaluator"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/pilot-management
+          pip install pytest pyyaml numpy pydantic
+
+      - name: "Run Shadow Detection Pipeline Tests"
+        run: |
+          pytest tests/pilot-integration/test_shadow_detection_pipeline.py -v

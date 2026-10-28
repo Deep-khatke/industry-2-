@@ -1,0 +1,41 @@
+name: "Phase 9 — Security, Tenant Isolation & Retention Audit"
+
+on:
+  push:
+    branches: ["main", "feature/phase9-isp-pilot"]
+    paths:
+      - "services/pilot-management/src/fcs_pilot/retention/**"
+      - "services/pilot-management/src/fcs_pilot/governance/**"
+      - "tests/pilot-reliability/test_rural_degradation_and_recovery.py"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-sec-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-security-compliance:
+    name: "Audit Tenant Isolation, Backup Restoration & Emergency Stop"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/pilot-management
+          pip install pytest pyyaml numpy pydantic
+
+      - name: "Run Reliability & Emergency Kill-Switch Tests"
+        run: |
+          pytest tests/pilot-reliability/test_rural_degradation_and_recovery.py -v

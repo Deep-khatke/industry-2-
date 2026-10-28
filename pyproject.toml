@@ -52,10 +52,11 @@ fcs = "tools.fcs_cli:main"
 fcs-hmd = "fcs_ml.hmd.cli:main"
 fcs-fl = "fcs_pfl.cli:main"
 fcs-gov = "fcs_governance.cli:main"
+fcs-pilot = "fcs_pilot.cli:main"
 
 [tool.setuptools.packages.find]
-where = [".", "services/dataset_pipeline/src", "services/ml_training/src", "services/api/src", "services/federated-learning/src", "services/governance/src"]
-include = ["packages*", "services*", "adapters*", "tools*", "fcs_udip*", "fcs_ml*", "fcs_api*", "fcs_pfl*", "fcs_governance*"]
+where = [".", "services/dataset_pipeline/src", "services/ml_training/src", "services/api/src", "services/federated-learning/src", "services/governance/src", "services/pilot-management/src"]
+include = ["packages*", "services*", "adapters*", "tools*", "fcs_udip*", "fcs_ml*", "fcs_api*", "fcs_pfl*", "fcs_governance*", "fcs_pilot*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -69,9 +70,11 @@ pythonpath = [
     "services/ml_training/src",
     "services/api/src",
     "services/federated-learning/src",
-    "services/governance/src"
+    "services/governance/src",
+    "services/pilot-management/src"
 ]
 addopts = "-v --strict-markers -ra"
+
 markers = [
     "unit: Unit tests verifying discrete components in isolation",
     "integration: Integration tests exercising end-to-end telemetry flows",

@@ -1,0 +1,62 @@
+# FCS Phase 9 Telemetry Requirements & NetFlow / IPFIX Exporter Specs
+
+telemetry_requirements:
+  version: "1.2.0"
+  protocols_supported:
+    - protocol: "IPFIX"
+      standard: "RFC 7011"
+      transport: "UDP / SCTP / TCP"
+      default_port: 2055
+    - protocol: "NetFlow_v9"
+      standard: "RFC 3954"
+      transport: "UDP"
+      default_port: 2055
+
+  required_ipfix_information_elements:
+    - ie_id: 8
+      name: "sourceIPv4Address"
+      type: "ipv4Address"
+      feature_mapping: "src_ip"
+    - ie_id: 12
+      name: "destinationIPv4Address"
+      type: "ipv4Address"
+      feature_mapping: "dst_ip"
+    - ie_id: 7
+      name: "sourceTransportPort"
+      type: "unsigned16"
+      feature_mapping: "src_port"
+    - ie_id: 11
+      name: "destinationTransportPort"
+      type: "unsigned16"
+      feature_mapping: "dst_port"
+    - ie_id: 4
+      name: "protocolIdentifier"
+      type: "unsigned8"
+      feature_mapping: "protocol"
+    - ie_id: 1
+      name: "octetDeltaCount"
+      type: "unsigned64"
+      feature_mapping: "bytes_count"
+    - ie_id: 2
+      name: "packetDeltaCount"
+      type: "unsigned64"
+      feature_mapping: "packets_count"
+    - ie_id: 6
+      name: "tcpControlBits"
+      type: "unsigned8"
+      feature_mapping: "tcp_flags"
+    - ie_id: 152
+      name: "flowStartMilliseconds"
+      type: "dateTimeMilliseconds"
+      feature_mapping: "flow_start_ms"
+    - ie_id: 153
+      name: "flowEndMilliseconds"
+      type: "dateTimeMilliseconds"
+      feature_mapping: "flow_end_ms"
+
+  quality_thresholds:
+    max_acceptable_packet_loss_percent: 5.0
+    max_acceptable_stream_lag_seconds: 15.0
+    stale_exporter_timeout_seconds: 90.0
+    sequence_gap_warning_threshold: 3
+    clock_drift_max_seconds: 5.0

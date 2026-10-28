@@ -1,0 +1,40 @@
+name: "Phase 9 — Operator Workflow & End-to-End Pilot Tests"
+
+on:
+  push:
+    branches: ["main", "feature/phase9-isp-pilot"]
+    paths:
+      - "services/pilot-management/**"
+      - "tests/pilot-e2e/test_pilot_end_to_end.py"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-operator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-operator-e2e:
+    name: "Run Complete End-to-End Pilot Lifecycle Simulation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/pilot-management
+          pip install pytest pyyaml numpy pydantic
+
+      - name: "Run E2E Pilot Test Suite"
+        run: |
+          pytest tests/pilot-e2e/test_pilot_end_to_end.py -v

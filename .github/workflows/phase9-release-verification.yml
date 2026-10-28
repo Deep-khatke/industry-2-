@@ -1,0 +1,63 @@
+name: "Phase 9 — Full Release Verification & Gate Audit"
+
+on:
+  push:
+    branches: ["main", "feature/phase9-isp-pilot"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-full-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-phase9-release:
+    name: "Full Test Suite Regression, Gate Audit & Zero-Cost Policy"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install -e services/pilot-management
+          pip install pytest pyyaml numpy rfc8785
+
+      - name: "Run All Phase 9 Automated Test Suites"
+        run: |
+          pytest tests/pilot-unit tests/pilot-integration tests/pilot-security tests/pilot-reliability tests/pilot-e2e -v
+
+      - name: "Execute Verification and Experiments"
+        run: |
+          python scripts/verify_phase9.py
+          python scripts/run_phase9_experiments.py
+
+      - name: "Assert Production Invariants"
+        run: |
+          python -c "
+          import json
+          with open('phase9_status.json') as f:
+              st = json.load(f)
+          assert st['zero_cost_budget'].startswith('STRICTLY ₹0 / $0')
+          assert st['response_mode'] == 'MANUAL_ONLY (AUTO DISABLED)'
+          assert st['network_action_executed'] is False
+          assert st['pilot_readiness_decision'] == 'READY_FOR_AUTHORIZED_SHADOW_PILOT'
+          assert st['architecture_gates_v1_2']['G13']['status'] == 'BLOCKED'
+          print('All Release Invariants Audited and Verified.')
+          "

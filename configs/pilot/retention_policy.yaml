@@ -1,0 +1,49 @@
+# FCS Phase 9 Data Retention & Deletion Policy
+# Enforces tenant-scoped retention per Section 24 of Phase 9 Specification
+
+retention_policy:
+  version: "1.2.0"
+  enforcement_mode: "TENANT_SCOPED_AUTOMATED"
+  audit_logging: true
+
+  categories:
+    raw_telemetry_flows:
+      max_retention_days: 7
+      description: "Ephemeral raw IPFIX/NetFlow packet flows in local buffer"
+      purge_mechanism: "ROLLING_AGE_PRUNING"
+      action_on_expiry: "SECURE_DELETE"
+
+    feature_windows:
+      max_retention_days: 14
+      description: "Aggregated window feature vectors for inference"
+      purge_mechanism: "ROLLING_AGE_PRUNING"
+      action_on_expiry: "SECURE_DELETE"
+
+    candidate_and_confirmed_incidents:
+      max_retention_days: 90
+      description: "Triage records, detection bundles, incident timeline"
+      purge_mechanism: "ARCHIVE_THEN_PURGE"
+      action_on_expiry: "SECURE_DELETE"
+
+    analyst_feedback_records:
+      max_retention_days: 180
+      description: "Human triage dispositions (TP, FP, etc.)"
+      purge_mechanism: "RETAIN_UNTIL_DATASET_SEAL"
+      action_on_expiry: "SECURE_DELETE"
+
+    action_journal_audit_logs:
+      max_retention_days: 365
+      description: "Cryptographic audit trail of manual responses"
+      purge_mechanism: "IMMUTABLE_LOG_RETENTION"
+      action_on_expiry: "LEGAL_HOLD_OR_ARCHIVE"
+
+    privacy_accounting_receipts:
+      max_retention_days: 730
+      description: "Differential privacy epsilon/delta accumulation records"
+      purge_mechanism: "PERMANENT_VERIFIABLE"
+      action_on_expiry: "RETAIN"
+
+  protected_scopes:
+    - "Active incident evidence under investigation cannot be pruned prematurely."
+    - "Cryptographic manifests and dual-signed releases cannot be pruned."
+    - "Consortium ledger state cannot be pruned."

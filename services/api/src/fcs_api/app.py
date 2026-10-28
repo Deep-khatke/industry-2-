@@ -12,6 +12,7 @@ for _src in [
     _project_root / "services" / "federated-learning" / "src",
     _project_root / "services" / "governance" / "src",
     _project_root / "services" / "ml_training" / "src",
+    _project_root / "services" / "pilot-management" / "src",
 ]:
     if str(_src) not in sys.path:
         sys.path.insert(0, str(_src))
@@ -31,6 +32,8 @@ from .routes.federation import router as federation_router
 from .routes.governance import router as governance_router
 from .routes.incidents import router as incidents_router
 from .routes.overview import router as overview_router
+from .routes.pilot import dev_router as pilot_dev_router
+from .routes.pilot import router as pilot_router
 from .routes.response_policy import router as response_policy_router
 
 logger = logging.getLogger("fcs_api")
@@ -85,6 +88,8 @@ app.include_router(dev_router)
 app.include_router(federation_router)
 app.include_router(federation_dev_router)
 app.include_router(governance_router)
+app.include_router(pilot_router)
+app.include_router(pilot_dev_router)
 
 
 @app.get("/healthz", tags=["System"])

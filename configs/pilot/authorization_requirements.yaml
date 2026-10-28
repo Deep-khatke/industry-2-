@@ -1,0 +1,62 @@
+# FCS Phase 9 ISP Pilot Authorization Policy & State Transition Prerequisites
+# Enforces real ISP authorization rules as per Section 2 of Phase 9 Specification
+
+authorization_requirements:
+  version: "1.2.0"
+  policy: "STRICT_HUMAN_AUTHORIZATION_REQUIRED"
+  zero_cost_policy: "ABSOLUTELY_ZERO_DOLLARS"
+
+  prerequisites_by_transition:
+    DRAFT_TO_AUTHORIZATION_PENDING:
+      required_fields:
+        - "isp_display_name"
+        - "technical_contact"
+        - "authorized_network_scope"
+        - "proposed_exporters"
+      required_roles:
+        - "TENANT_ADMIN"
+        - "PLATFORM_ADMIN"
+
+    AUTHORIZATION_PENDING_TO_TECHNICAL_REVIEW:
+      required_documents:
+        - "WRITTEN_PARTICIPATION_AGREEMENT"
+        - "DATA_GOVERNANCE_CHARTER"
+        - "ZERO_COST_INFRASTRUCTURE_CONFIRMATION"
+      verifications:
+        - "identifiable_participating_isp"
+        - "approved_technical_contact"
+        - "defined_network_scope"
+        - "no_charge_resources_verified"
+
+    TECHNICAL_REVIEW_TO_SECURITY_REVIEW:
+      technical_checks:
+        - "exporter_compatibility_verified"
+        - "template_parsing_verified"
+        - "featurespec_parity_pass"
+        - "sampling_rate_corrected"
+        - "telemetry_freshness_verified"
+
+    SECURITY_REVIEW_TO_READY_FOR_SHADOW:
+      security_approvals:
+        - "tenant_isolation_boundary_verified"
+        - "subscriber_privacy_policy_approved"
+        - "retention_limits_configured"
+        - "emergency_stop_procedure_approved"
+        - "dual_authorization_workflow_tested"
+        - "protected_infrastructure_rules_locked"
+
+    READY_FOR_SHADOW_TO_SHADOW_ACTIVE:
+      activation_rules:
+        - "server_enforced_shadow_mode_true"
+        - "auto_response_permanently_disabled"
+        - "network_actions_advisory_only"
+        - "firewall_simulator_default_active"
+        - "designated_soc_analyst_assigned"
+
+  forbidden_actions:
+    - "No contact with live customer-network equipment without explicit signed authorization."
+    - "No automatic modifications to router or firewall configurations."
+    - "No scanning public networks looking for an ISP exporter."
+    - "No capturing or storing packet payloads."
+    - "No uploading real ISP telemetry to public repositories."
+    - "No activation of any paid cloud resources."

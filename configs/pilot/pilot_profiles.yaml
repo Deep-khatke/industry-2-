@@ -1,0 +1,188 @@
+# Federated Cyber Shield (FCS) v1.2 — Phase 9 ISP Pilot Profiles
+# Configuration for Simulated and Prospective Real ISP Pilot Deployments
+
+pilots:
+  - pilot_id: "pilot-sim-001"
+    tenant_id: "rural-isp-alpha"
+    isp_display_name: "Northern Valley Broadband (ASN 64512)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "soc-lead@alpha-broadband.test"
+    authorized_network_scope:
+      prefixes: ["192.168.1.0/24", "10.0.1.0/24"]
+      observation_domain_ids: [1001, 1002]
+    exporters:
+      - exporter_id: "exp-alpha-core-01"
+        vendor: "Cisco"
+        model: "ASR 1001-X"
+        protocol: "IPFIX"
+        ip_address: "10.0.1.1"
+        expected_frequency_sec: 10
+        sampling_rate: 1
+        observation_domain_id: 1001
+    status: "SHADOW_ACTIVE"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-25T08:00:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-002"
+    tenant_id: "coastal-reach-beta"
+    isp_display_name: "Coastal Reach Networks (ASN 64513)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "noc-admin@coastal-reach.test"
+    authorized_network_scope:
+      prefixes: ["192.168.2.0/24", "10.0.2.0/24"]
+      observation_domain_ids: [2001]
+    exporters:
+      - exporter_id: "exp-beta-edge-01"
+        vendor: "Juniper"
+        model: "MX204"
+        protocol: "IPFIX"
+        ip_address: "10.0.2.1"
+        expected_frequency_sec: 15
+        sampling_rate: 1
+        observation_domain_id: 2001
+    status: "READY_FOR_SHADOW"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-25T08:30:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-003"
+    tenant_id: "mountain-divide-gamma"
+    isp_display_name: "Mountain Divide Internet (ASN 64514)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "ops@mountain-divide.test"
+    authorized_network_scope:
+      prefixes: ["192.168.3.0/24", "10.0.3.0/24"]
+      observation_domain_ids: [3001]
+    exporters:
+      - exporter_id: "exp-gamma-agg-01"
+        vendor: "MikroTik"
+        model: "CCR2116-12G-4S+"
+        protocol: "NetFlow_v9"
+        ip_address: "10.0.3.1"
+        expected_frequency_sec: 30
+        sampling_rate: 10
+        observation_domain_id: 3001
+    status: "TECHNICAL_REVIEW"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-26T09:00:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-004"
+    tenant_id: "heartland-fiber-delta"
+    isp_display_name: "Heartland Fiber Co-op (ASN 64515)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "network@heartland-fiber.test"
+    authorized_network_scope:
+      prefixes: ["192.168.4.0/24", "10.0.4.0/24"]
+      observation_domain_ids: [4001]
+    exporters:
+      - exporter_id: "exp-delta-gw-01"
+        vendor: "Linux"
+        model: "ipt_NETFLOW / softflowd"
+        protocol: "IPFIX"
+        ip_address: "10.0.4.1"
+        expected_frequency_sec: 10
+        sampling_rate: 1
+        observation_domain_id: 4001
+    status: "READY_FOR_SHADOW"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-26T09:30:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-005"
+    tenant_id: "prairie-wind-epsilon"
+    isp_display_name: "Prairie Wind Wireless (ASN 64516)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "admin@prairie-wind.test"
+    authorized_network_scope:
+      prefixes: ["192.168.5.0/24", "10.0.5.0/24"]
+      observation_domain_ids: [5001]
+    exporters:
+      - exporter_id: "exp-epsilon-tower-01"
+        vendor: "Huawei"
+        model: "NetEngine 8000 M1"
+        protocol: "IPFIX"
+        ip_address: "10.0.5.1"
+        expected_frequency_sec: 20
+        sampling_rate: 5
+        observation_domain_id: 5001
+    status: "SECURITY_REVIEW"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-26T10:00:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-006"
+    tenant_id: "pine-belt-zeta"
+    isp_display_name: "Pine Belt Telecom (ASN 64517)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "sec-eng@pine-belt.test"
+    authorized_network_scope:
+      prefixes: ["192.168.6.0/24", "10.0.6.0/24"]
+      observation_domain_ids: [6001]
+    exporters:
+      - exporter_id: "exp-zeta-edge-01"
+        vendor: "VyOS"
+        model: "VyOS 1.4"
+        protocol: "IPFIX"
+        ip_address: "10.0.6.1"
+        expected_frequency_sec: 15
+        sampling_rate: 1
+        observation_domain_id: 6001
+    status: "READY_FOR_SHADOW"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-27T11:00:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-sim-007"
+    tenant_id: "high-desert-eta"
+    isp_display_name: "High Desert Broadband (ASN 64518)"
+    environment_mode: "MODE_A_SYNTHETIC"
+    authorization_status: "AUTHORIZED_FOR_SIMULATION"
+    technical_contact: "tech@high-desert.test"
+    authorized_network_scope:
+      prefixes: ["192.168.7.0/24", "10.0.7.0/24"]
+      observation_domain_ids: [7001]
+    exporters:
+      - exporter_id: "exp-eta-core-01"
+        vendor: "pfSense"
+        model: "pfSense Plus 24.x (softflowd)"
+        protocol: "NetFlow_v9"
+        ip_address: "10.0.7.1"
+        expected_frequency_sec: 30
+        sampling_rate: 1
+        observation_domain_id: 7001
+    status: "DRAFT"
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-27T11:30:00Z"
+    updated_at: "2026-10-28T10:00:00Z"
+
+  - pilot_id: "pilot-real-template-001"
+    tenant_id: "prospective-real-isp"
+    isp_display_name: "Prospective Production ISP Partner"
+    environment_mode: "MODE_B_REAL_SHADOW"
+    authorization_status: "PENDING_FORMAL_AGREEMENT"
+    technical_contact: "partner-noc@prospective-isp.example"
+    authorized_network_scope:
+      prefixes: []
+      observation_domain_ids: []
+    exporters: []
+    status: "PILOT_BLOCKED"
+    blocker_reason: "LIVE_PILOT_BLOCKED: Formal written authorization, subscriber privacy agreement, and dedicated zero-cost production infrastructure pending."
+    data_retention_days: 7
+    incident_retention_days: 90
+    created_at: "2026-10-28T12:00:00Z"
+    updated_at: "2026-10-28T12:00:00Z"

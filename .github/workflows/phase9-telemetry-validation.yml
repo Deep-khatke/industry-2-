@@ -1,0 +1,41 @@
+name: "Phase 9 — Telemetry Ingestion & Exporter Validation"
+
+on:
+  push:
+    branches: ["main", "feature/phase9-isp-pilot"]
+    paths:
+      - "services/pilot-management/src/fcs_pilot/exporter_compatibility/**"
+      - "configs/pilot/telemetry_requirements.yaml"
+      - "tests/pilot-unit/test_onboarding_and_exporters.py"
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-telemetry-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-exporter-telemetry:
+    name: "Validate Exporter Registry, Sequence Tracking & Feature Parity"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install dependencies"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/pilot-management
+          pip install pytest pyyaml numpy
+
+      - name: "Run Exporter Compatibility Unit Tests"
+        run: |
+          pytest tests/pilot-unit/test_onboarding_and_exporters.py -v

@@ -1,0 +1,27 @@
+# FCS Phase 9 Service Level Objectives & Operational Thresholds
+# Architecture v1.2 Planning Objectives
+
+operational_thresholds:
+  version: "1.2.0"
+  slos:
+    incident_api_availability_target_percent: 99.9
+    scoring_delay:
+      p95_seconds: 5.0
+      p99_seconds: 15.0
+      measurement_boundary: "window_ready_to_incident_persistence"
+    model_fallback_max_minutes: 5.0
+    ingestion_burst_multiplier: 10.0
+    ingestion_burst_duration_minutes: 15.0
+    backlog_recovery_max_minutes: 30.0
+
+  pilot_targets:
+    max_false_grouped_incidents_per_isp_per_day: 5.0
+    target_analyst_triage_time_per_incident_minutes: 4.0
+    max_daily_analyst_triage_budget_minutes: 20.0
+    min_shadow_evaluation_calendar_days: 7
+
+  rural_network_simulation:
+    loss_rates_percent: [0.0, 1.0, 5.0]
+    high_loss_stress_rate_percent: 15.0
+    max_jitter_ms: 120.0
+    reorder_probability: 0.05

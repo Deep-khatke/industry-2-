@@ -205,4 +205,82 @@ export const api = {
       method: 'POST',
     });
   },
+
+  // Phase 9 Pilot Operations
+  getPilotStatus: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/status${q}`);
+  },
+
+  getPilotReadiness: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/readiness${q}`);
+  },
+
+  getPilotRequirements: async () => {
+    return request<any>('/pilot/requirements');
+  },
+
+  getPilotExporters: async () => {
+    return request<any>('/pilot/exporters');
+  },
+
+  getExporterCompatibility: async (exporterKey: string) => {
+    return request<any>(`/pilot/exporters/${encodeURIComponent(exporterKey)}/compatibility`);
+  },
+
+  getPilotCoverage: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/coverage${q}`);
+  },
+
+  getPilotShadowMetrics: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/shadow-metrics${q}`);
+  },
+
+  getPilotDailyReports: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/daily-reports${q}`);
+  },
+
+  getPilotAnalystWorkload: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/analyst-workload${q}`);
+  },
+
+  getPilotSafetyStatus: async () => {
+    return request<any>('/pilot/safety-status');
+  },
+
+  getPilotHealth: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/health${q}`);
+  },
+
+  getPilotComprehensiveReport: async (tenantId?: string) => {
+    const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
+    return request<any>(`/pilot/report${q}`);
+  },
+
+  configurePilot: async (pilotId: string, targetState: string, reason: string) => {
+    return request<any>('/pilot/configure', {
+      method: 'POST',
+      body: JSON.stringify({ pilot_id: pilotId, target_state: targetState, reason }),
+    });
+  },
+
+  submitAnalystFeedback: async (feedback: { incident_id: string; disposition: string; review_duration_seconds: number; notes: string; confidence_level?: number }) => {
+    return request<any>('/pilot/analyst-feedback', {
+      method: 'POST',
+      body: JSON.stringify(feedback),
+    });
+  },
+
+  startPilotSyntheticReplay: async (scenario = 'SYNTHETIC_7_DAY') => {
+    return request<any>(`/dev/pilot/replay?scenario=${encodeURIComponent(scenario)}`, {
+      method: 'POST',
+    });
+  },
 };
+

@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "rto_seconds": 0.0322,
+  "integrity_check": "ok",
+  "tables_verified": 17,
+  "privacy_spend_preserved": true,
+  "revoked_models_preserved": true,
+  "auto_live_disabled": true,
+  "details": {
+    "archive_file": "fcs_backup_20261029_121714.tar.gz",
+    "archive_size_bytes": 57260,
+    "metadata": {
+      "backup_version": "1.2.0",
+      "phase": "11-production-hardening",
+      "created_at": "2026-10-29T12:17:14.292663+00:00",
+      "database_metadata": {
+        "backup_file": "C:\\college\\industry 2\\data\\backups\\fcs_backup_staging_20261029_121714\\fcs_database.db",
+        "size_bytes": 569344,
+        "sha384": "753442f2af6f023bb455dc30c7fde4e79f15e3f67c4748a8b2887e23ed8092ddf5d34cddbeab6bbb14280ce9aef6cc18"
+      },
+      "table_counts": {
+        "tenants": 7,
+        "users": 7,
+        "exporters": 8,
+        "flow_events": 0,
+        "feature_windows": 0,
+        "detection_scores": 0,
+        "incidents": 0,
+        "incident_history": 0,
+        "recommendations": 0,
+        "action_journal": 0,
+        "simulated_firewall_rules": 0,
+        "notification_outbox": 0,
+        "audit_events": 0,
+        "service_health": 0,
+        "detection_bundles": 1,
+        "routing_decisions": 0,
+        "model_scores": 0
+      },
+      "privacy_spend_invariants": {},
+      "model_registry_snapshot": {
+        "default_bundle.json": {
+          "bundle_id": "fcs-hmd-bundle-v1",
+          "version": "1.2.0",
+          "general_model_id": "lightgbm_deployable_subset",
+          "anomaly_model_id": "isolationforest_anomaly_tenant",
+          "specialist_model_ids": [
+            "lightgbm_ddos_specialist",
+            "lightgbm_scanning_specialist"
+          ],
+          "model_hashes": {
+            "lightgbm_deployable_subset": "f776a93db005a242c329d183a04f83899aaaaf72972ed884525bacda368a8f58",
+            "isolationforest_anomaly_tenant": "93efc8df38b5b2e942d4762c9ac99cf02752cd9edeb7fe709c356e98d9ca1b8f",
+            "lightgbm_ddos_specialist": "a43bbb2c9930e43b9375901ad1a9c033f2b14c5168a06447f7ee2a6eb16fc0dd",
+            "lightgbm_scanning_specialist": "db34b856925c81762b348786ab0834e03d7b3a67385cd0d9850b5843d83c656f"
+          },
+          "bundle_digest": "2bd8454c761cc75af262f25b11fa6031385c22649e6ad51c7e1eb2a88a40e493",
+          "authorized_by": "security_admin",
+          "status": "ACTIVE",
+          "created_at": "2026-10-27T05:28:51.674103+00:00",
+          "activated_at": null
+        }
+      },
+      "response_mode": "MANUAL",
+      "auto_live_disabled": true
+    },
+    "tables_found": [
+      "action_journal",
+      "audit_events",
+      "detection_bundles",
+      "detection_scores",
+      "exporters",
+      "feature_windows",
+      "flow_events",
+      "incident_history",
+      "incidents",
+      "model_scores",
+      "notification_outbox",
+      "recommendations",
+      "routing_decisions",
+      "service_health",
+      "simulated_firewall_rules",
+      "tenants",
+      "users"
+    ]
+  }
+}

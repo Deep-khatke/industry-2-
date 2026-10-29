@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-10-29T12:19:42.279255+00:00",
+  "hardware_info": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "python_version": "3.13.7"
+  },
+  "ml_inference_latencies": {
+    "min_ms": 8.688,
+    "p50_ms": 11.694,
+    "p95_ms": 13.4876,
+    "p99_ms": 16.7581,
+    "max_ms": 24.2178,
+    "samples": 100
+  },
+  "pipeline_scoring_latencies": {
+    "min_ms": 455.4768,
+    "p50_ms": 541.8228,
+    "p95_ms": 585.5402,
+    "p99_ms": 590.518,
+    "max_ms": 591.7625,
+    "samples": 15
+  },
+  "slo_evaluation": {
+    "slo_scoring_latency_p95": {
+      "target": "<= 5000 ms",
+      "measured": "585.5402 ms",
+      "status": "PASS"
+    },
+    "slo_scoring_latency_p99": {
+      "target": "<= 15000 ms",
+      "measured": "590.518 ms",
+      "status": "PASS"
+    },
+    "slo_hmd_inference_p50": {
+      "target": "<= 25.0 ms",
+      "measured": "11.694 ms",
+      "status": "PASS"
+    },
+    "slo_incident_api_availability": {
+      "target": "99.9% target",
+      "environment_measured": "100.0% in local test runs",
+      "status": "PASS_DEVELOPMENT"
+    }
+  },
+  "throughput_records_per_sec": 74.75,
+  "status": "PASS"
+}

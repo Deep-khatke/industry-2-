@@ -1,0 +1,39 @@
+name: "Phase 11 — Contract Tests & Schema Conformance"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract-tests:
+    name: "API Contracts & System Interface Validation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/api
+          pip install -e . --no-deps
+          pip install pytest pyyaml rfc8785
+
+      - name: "Run Contract Verification Suites"
+        run: |
+          pytest tests/phase11/contracts/ tests/system/contracts/ -v

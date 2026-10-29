@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend-ci:
+    build:
+      context: ../../../
+      dockerfile: infrastructure/containers/development/Dockerfile.backend
+    container_name: fcs-backend-integration
+    environment:
+      - FCS_ENV=INTEGRATION
+      - FCS_DB_PATH=/app/data/fcs_integration.db
+      - FCS_JWT_SECRET=fcs-integration-ci-ephemeral-secret-key-384bit
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M,uid=10001,gid=10001
+      - /app/data:size=128M,uid=10001,gid=10001
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3

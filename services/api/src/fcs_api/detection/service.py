@@ -53,6 +53,11 @@ class DetectionService:
             self._last_error = "fcs_ml.hmd module not imported"
             return
 
+        if not abs_reg_dir.exists() or not any(abs_reg_dir.glob("*.json")):
+            self._model_status = "MODEL_NOT_AVAILABLE"
+            self._last_error = f"Model registry directory missing or empty: {abs_reg_dir}"
+            return
+
         try:
             self._hmd_engine = HierarchicalDetectionEngine(
                 registry_dir=abs_reg_dir,

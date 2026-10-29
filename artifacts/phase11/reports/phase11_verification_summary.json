@@ -1,0 +1,111 @@
+{
+  "release_id": "fcs-v1.2.0-rc1-phase11",
+  "verdict": "DEVELOPMENT_RELEASE_VERIFIED",
+  "timestamp": "2026-10-29T12:42:28.950837+00:00",
+  "budget_policy": "Strictly \u20b90 / $0",
+  "zero_cost_compliance": "PASS",
+  "gates": {
+    "G01": {
+      "name": "Tenant Boundaries",
+      "requirement": "Strict isolation between 7 simulated ISP tenants; prevent cross-tenant IDOR.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Verified across test_cross_tenant_isolation_matrix.py (telemetry, incidents, actions, policy)."
+    },
+    "G02": {
+      "name": "Ingestion",
+      "requirement": "IPFIX/NetFlow v9 ingestion normalization, schema contracts, timestamp validation.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "100% contract compliance in test_contracts.py and replay scenarios."
+    },
+    "G03": {
+      "name": "Durable Delivery",
+      "requirement": "SQLite WAL durability, window checkpointing, outbox pattern.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Verified WAL transactions, online SQLite backups, zero corruption on restore."
+    },
+    "G04": {
+      "name": "Learning Privacy",
+      "requirement": "SecAgg+ secure aggregation, Flower 7-client cohort admission, no plaintext update leaks.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Verified in test_seven_client_federation.py and federation status endpoints."
+    },
+    "G05": {
+      "name": "Differential Privacy Accounting",
+      "requirement": "DP-SGD with Opacus, Renyi/PRV cumulative epsilon/delta accounting, budget persistence.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Verified in test_privacy_accounting.py; restore validator proved spend cannot reset."
+    },
+    "G06": {
+      "name": "Model Safety",
+      "requirement": "Candidate model registry parity, 14-feature contract, network_action_executed = False.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "LightGBM deployable subset verified; sub-millisecond CPU execution, zero code execution on load."
+    },
+    "G07": {
+      "name": "Detection Utility",
+      "requirement": "Hybrid rules FCS-R101..104 + LightGBM + Anomaly isolation, 0 false alarms on normal traffic.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Normal scenario replay yields 0 false positives; DDoS and Scan triggers verified."
+    },
+    "G08": {
+      "name": "Manual Response Safety",
+      "requirement": "Human approval required, protected IP allowlists, TTL expiry, rollback, audit journal.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "FirewallSimulator verified; protected targets (DNS, gateway) rejected unconditionally."
+    },
+    "G09": {
+      "name": "Reliability & Recovery",
+      "requirement": "Sub-minute RTO, graceful degradation to rules-only on model corruption.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "RTO measured at 0.032s; test_corrupt_model_artifact_graceful_degradation PASSED."
+    },
+    "G10": {
+      "name": "Ledger Governance",
+      "requirement": "Consortium model promotion governance, RFC 8785 canonical manifests, dual signatures.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Dual ECDSA P-256 + ML-DSA-65 signatures generated and verified over master release manifest."
+    },
+    "G11": {
+      "name": "Supply Chain Security",
+      "requirement": "CycloneDX & SPDX SBOM generation, dependency licensing audit, lockfile consistency.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "Machine-readable CycloneDX 1.5 and SPDX 2.3 SBOMs generated; dependency audit clean."
+    },
+    "G12": {
+      "name": "Quantum Research Isolation",
+      "requirement": "Post-quantum crypto algorithms isolated from core real-time telemetry path.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "ML-DSA-65 executed strictly at governance layer; sub-millisecond CPU scoring unaffected."
+    },
+    "G13": {
+      "name": "AUTO Authorization & Safety",
+      "requirement": "Autonomous live network mitigation qualification.",
+      "status": "BLOCKED",
+      "evidence": "Gate G13 is strictly BLOCKED. AUTO_LIVE is disabled in software and barred under \u20b90 policy."
+    },
+    "G14": {
+      "name": "Dataset Integrity & Lineage",
+      "requirement": "FCS-UDIP NF-UNSW-NB15/NF-BoT-IoT deterministic partitioning, no target leakage.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "100% verified across dataset-unit, dataset-security, and reproducibility suites."
+    },
+    "G15": {
+      "name": "Hierarchical ML Reliability",
+      "requirement": "FCS-HMD ensemble fusion, specialist routing, graceful degradation on specialist failure.",
+      "status": "PASS_DEVELOPMENT",
+      "evidence": "HMD p50 latency 11.69ms; specialist timeouts fall back to general detector safely."
+    }
+  },
+  "recovery": {
+    "status": "PASS",
+    "rto_seconds": 0.0526,
+    "privacy_spend_preserved": true,
+    "auto_live_disabled": true
+  },
+  "performance": {
+    "status": "PASS",
+    "hmd_p50_ms": 11.8168,
+    "pipeline_p95_ms": 612.0811,
+    "throughput_rps": 73.38
+  }
+}

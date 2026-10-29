@@ -1,0 +1,70 @@
+name: "Phase 11 — Core CI & Matrix Regression"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-core-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-python-matrix:
+    name: "Python Regression Suite (${{ matrix.python-version }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: "Install dependencies and packages"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install -e services/pilot-management
+          pip install -e . --no-deps
+          pip install pytest pyyaml numpy rfc8785
+
+      - name: "Run Core Tests"
+        run: |
+          pytest tests/unit/ tests/system/ tests/phase11/ -v
+
+  frontend-build:
+    name: "Security Dashboard Frontend Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/security-dashboard/package-lock.json
+
+      - name: "Install and Build Frontend"
+        working-directory: apps/security-dashboard
+        run: |
+          npm ci
+          npm run build

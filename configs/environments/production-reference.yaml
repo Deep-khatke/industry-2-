@@ -1,0 +1,48 @@
+# FCS Environment Configuration: PRODUCTION_REFERENCE (Design/Reference Only - No Billable Resources)
+environment: PRODUCTION_REFERENCE
+project_name: Federated Cyber Shield
+version: 1.2.0
+
+security:
+  debug_mode: false
+  allow_demo_credentials: false
+  allow_demo_endpoints: false
+  allow_synthetic_replay: false
+  auto_live_enabled: false
+  jwt_expiration_minutes: 15
+  enforce_mfa: true
+  trusted_hosts:
+    - "shield.rural-isp-consortium.org"
+  cors_allowed_origins:
+    - "https://shield.rural-isp-consortium.org"
+
+storage:
+  db_path: "/var/lib/fcs/data/fcs_production.db"
+  backup_dir: "/var/backups/fcs"
+  model_registry_dir: "/opt/fcs/candidate-models"
+
+detection:
+  window_duration_seconds: 30.0
+  allowed_lateness_seconds: 60.0
+  incident_grouping_window_seconds: 300
+  default_model_id: "lightgbm_deployable_subset"
+
+response:
+  mode: MANUAL
+  auto_response_enabled: false
+  max_action_duration_seconds: 1800
+  min_action_duration_seconds: 60
+  protected_ip_ranges:
+    - "127.0.0.1"
+    - "::1"
+    - "10.0.0.1"
+    - "192.168.1.1"
+    - "0.0.0.0/0"
+    - "255.255.255.255"
+    - "1.1.1.1"
+    - "8.8.8.8"
+    - "9.9.9.9"
+
+cost_policy:
+  budget_cap: 0
+  enforce_zero_cost: true

@@ -19,10 +19,10 @@ class StartReplayRequest(BaseModel):
 
 
 def verify_dev_mode() -> None:
-    if settings.environment != "development":
+    if not settings.is_development or not settings.allow_demo_endpoints:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Development endpoints are disabled in production configurations.",
+            detail="Development endpoints are disabled outside DEVELOPMENT mode.",
         )
 
 

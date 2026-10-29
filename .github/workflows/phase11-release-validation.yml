@@ -1,0 +1,48 @@
+name: "Phase 11 — Release Candidate Validation & Signing"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-release-val-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-validation:
+    name: "Dual Manifest Signing & SLO Performance Benchmarking"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/api
+          pip install -e services/ml_training
+          pip install -e . --no-deps
+          pip install pytest pyyaml numpy rfc8785 cryptography
+
+      - name: "Build Dual-Signed Release Manifest"
+        run: |
+          python tools/release/build_release_manifest.py
+
+      - name: "Run SLO Performance Benchmarks"
+        run: |
+          python -m tools.performance.benchmark_suite
+
+      - name: "Run Release Candidate Governance Tests"
+        run: |
+          pytest tests/phase11/governance/ tests/phase11/response/ -v

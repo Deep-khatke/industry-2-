@@ -1,0 +1,45 @@
+name: "Phase 11 — End-to-End System Integration"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-tests:
+    name: "Pipeline Integration & Multi-Tenant Scenarios"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install -e services/pilot-management
+          pip install -e . --no-deps
+          pip install pytest pyyaml numpy rfc8785
+
+      - name: "Run Integration Tests"
+        run: |
+          pytest tests/phase11/test_environment_and_config.py tests/phase11/release/ tests/phase4-integration/ -v

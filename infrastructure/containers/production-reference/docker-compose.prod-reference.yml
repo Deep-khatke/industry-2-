@@ -1,0 +1,35 @@
+# FCS Production-Reference Architecture Specification (Design Only - Strictly No Billable Deployment)
+version: '3.8'
+
+services:
+  backend-prod-ref:
+    image: fcs/backend:1.2.0-rc1
+    container_name: fcs-backend-prod-ref
+    restart: always
+    environment:
+      - FCS_ENV=PRODUCTION_REFERENCE
+      - FCS_DB_PATH=/var/lib/fcs/data/fcs_production.db
+      - FCS_JWT_SECRET=${SECURE_HSM_KMS_ROTATED_JWT_SECRET}
+      - FCS_JWT_EXPIRATION_MINUTES=15
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M,uid=10001,gid=10001,noexec,nosuid
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4096M
+        reservations:
+          cpus: '1.0'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3

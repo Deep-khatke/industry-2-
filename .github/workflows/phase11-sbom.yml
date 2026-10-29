@@ -1,0 +1,37 @@
+name: "Phase 11 — SBOM Generation & Verification"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-sbom-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sbom-generation:
+    name: "CycloneDX 1.5 & SPDX 2.3 SBOM Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Generate SBOMs"
+        run: |
+          python tools/sbom/generate_sbom.py
+
+      - name: "Validate SBOM File Existence"
+        run: |
+          test -f artifacts/phase11/sbom/cyclonedx_sbom.json
+          test -f artifacts/phase11/sbom/spdx_sbom.json

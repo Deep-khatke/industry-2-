@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../../../
+      dockerfile: infrastructure/containers/development/Dockerfile.backend
+    container_name: fcs-backend-dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - FCS_ENV=DEVELOPMENT
+      - FCS_DB_PATH=/app/data/fcs_phase4.db
+      - FCS_JWT_SECRET=fcs-phase4-ephemeral-dev-secret-key-zero-cost
+    volumes:
+      - ../../../data:/app/data
+      - ../../../artifacts:/app/artifacts:ro
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  dashboard:
+    build:
+      context: ../../../
+      dockerfile: infrastructure/containers/development/Dockerfile.frontend
+    container_name: fcs-dashboard-dev
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M

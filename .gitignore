@@ -75,11 +75,14 @@ Thumbs.db
 
 # FCS local test output & scratch
 /scratch/
-/artifacts/
+/artifacts/*
+!/artifacts/phase11/
 /data/local/
 /data/raw/
 /data/staging/
 /data/processed/
+/data/backups/
+/backups/
 *.parquet
 *.csv.gz
 !data/synthetic-fixtures/

@@ -1,0 +1,49 @@
+name: "Phase 11 — Final Release Verification & Release Gate Audit"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-final-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  final-verification:
+    name: "Full Unified Verification, Gate Evaluation & Release Packaging"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/telemetry_validation
+          pip install -e services/dataset_pipeline
+          pip install -e services/ml_training
+          pip install -e services/api
+          pip install -e services/federated-learning
+          pip install -e services/governance
+          pip install -e services/pilot-management
+          pip install -e . --no-deps
+          pip install pytest pyyaml numpy rfc8785 cryptography
+
+      - name: "Execute Unified Phase 11 Release Verification"
+        run: |
+          python scripts/verify_phase11.py
+
+      - name: "Verify Final Verdict in Summary Report"
+        run: |
+          grep -q "DEVELOPMENT_RELEASE_VERIFIED" artifacts/phase11/reports/phase11_verification_summary.json

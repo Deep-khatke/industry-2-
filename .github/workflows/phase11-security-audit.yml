@@ -1,0 +1,47 @@
+name: "Phase 11 — Security Audit & Zero-Cost Guardrails"
+
+on:
+  push:
+    branches: ["main", "feature/phase11-production-hardening"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase11-sec-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-audit:
+    name: "Zero-Cost Audit, Supply Chain & Auth Security"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: "Install core packages"
+        run: |
+          pip install -e packages/contracts
+          pip install -e services/api
+          pip install -e . --no-deps
+          pip install pytest pyyaml rfc8785
+
+      - name: "Enforce Zero-Cost Policy (Scanner)"
+        run: |
+          python tools/zero-cost-audit/scanner.py
+
+      - name: "Enforce Dependency Security Audit"
+        run: |
+          python tools/security/dependency_audit.py
+
+      - name: "Run Authentication, RBAC & Isolation Security Tests"
+        run: |
+          pytest tests/phase11/security/ -v

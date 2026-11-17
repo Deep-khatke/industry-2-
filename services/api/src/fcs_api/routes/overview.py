@@ -173,6 +173,18 @@ def get_telemetry_coverage(
     now_str = now_dt.isoformat()
 
     with get_db() as conn:
+        # Get count of flow events per exporter for this tenant
+        flow_counts = conn.execute(
+            """
+            SELECT exporter_id, COUNT(*) as count 
+            FROM flow_events 
+            WHERE tenant_id = ? 
+            GROUP BY exporter_id
+            """,
+            (target_tenant_id,),
+        ).fetchall()
+        counts_by_exporter = {row["exporter_id"]: row["count"] for row in flow_counts}
+
         exporters = conn.execute(
             "SELECT * FROM exporters WHERE tenant_id = ?",
             (target_tenant_id,),
@@ -207,11 +219,14 @@ def get_telemetry_coverage(
 
             exporter_list.append({
                 "exporter_id": exp["exporter_id"],
+                "tenant_id": target_tenant_id,
+                "name": f"Edge Router ({exp['exporter_id']})",
                 "ip_address": exp["ip_address"],
                 "observation_domain_id": exp["observation_domain_id"],
                 "sample_rate": exp["sample_rate"],
                 "status": freshness_status,
                 "delay_seconds": round(delay_seconds, 1),
+                "records_received": counts_by_exporter.get(exp["exporter_id"], 0),
                 "last_seen_at": last_seen,
             })
 

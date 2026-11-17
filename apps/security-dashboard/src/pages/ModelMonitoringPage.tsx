@@ -80,61 +80,63 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Top Banner */}
-      <div className="bg-[#0d131f] border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-700/60 text-purple-400">
-            <Cpu className="w-5 h-5" />
+      <div className="bg-white border border-[#ebebeb] p-6 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+            <Cpu className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+            <h2 className="text-sm font-extrabold text-[#111111] flex items-center gap-2">
               <span>FCS-HMD: Hierarchical Multi-Model Intrusion Detection Engine</span>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+              <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                 STATUS: {modelHealth?.status || 'READY'}
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
-              Architecture v1.2: General Threat Detector, Tenant Anomaly Baselines, Attack Specialists & Deterministic Evidence Fusion.
+            <p className="text-xs text-[#767676] font-medium mt-1">
+              General Threat Detector, Tenant Anomaly Baselines, Attack Specialists & Deterministic Evidence Fusion.
             </p>
           </div>
         </div>
 
         <div className="text-right font-mono text-xs">
-          <span className="text-slate-500">Security Invariant: </span>
-          <span className="text-cyan-400 font-bold">network_action_executed = False</span>
+          <span className="text-[#767676]">Security Invariant: </span>
+          <span className="text-[#111111] font-bold bg-[#f0f0f2] px-2.5 py-1 rounded-full">network_action_executed = False</span>
         </div>
       </div>
 
       {actionMessage && (
-        <div className="p-3 bg-cyan-950/40 border border-cyan-800 text-cyan-300 text-xs rounded-lg font-mono flex items-center space-x-2">
-          <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+        <div className="p-4 bg-blue-50 border border-blue-200 text-blue-900 text-xs rounded-2xl font-mono flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
           <span>{actionMessage}</span>
         </div>
       )}
 
       {/* 1. DetectionBundle & Rollback Interface */}
-      <div className="cyber-card p-5 border-cyan-500/30">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-100">
           <div>
-            <div className="flex items-center space-x-2">
-              <Lock className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white">
-                Active DetectionBundle: <span className="font-mono text-cyan-400">{bundle?.bundle_id || 'fcs-hmd-bundle-v1'}</span>
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-xl bg-blue-50 text-blue-600">
+                <Lock className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-extrabold text-[#111111]">
+                Active DetectionBundle: <span className="font-mono text-blue-700">{bundle?.bundle_id || 'fcs-hmd-bundle-v1'}</span>
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
                 v{bundle?.version || '1.2.0'}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Authorized by <span className="text-slate-200 font-mono">{bundle?.authorized_by || 'security_admin'}</span> • SHA-256 Digest: <span className="text-cyan-300 font-mono">{bundle?.bundle_digest?.slice(0, 16) || '2bd8454c761cc75a'}...</span>
+            <p className="text-xs text-[#767676] font-medium mt-1">
+              Authorized by <span className="text-[#111111] font-bold font-mono">{bundle?.authorized_by || 'security_admin'}</span> • SHA-256 Digest: <span className="text-blue-700 font-mono font-bold">{bundle?.bundle_digest?.slice(0, 16) || '2bd8454c761cc75a'}...</span>
             </p>
           </div>
 
           <button
             onClick={handleRollback}
             disabled={isLoading}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-950/60 hover:bg-amber-900 border border-amber-700/60 text-amber-300 text-xs font-semibold font-mono transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold font-mono transition-colors disabled:opacity-50"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Rollback DetectionBundle</span>
@@ -143,42 +145,42 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
 
         {/* Constituent Models in Bundle */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-            <span className="text-slate-500 block text-[10px] font-mono">LEVEL 1 GENERAL</span>
-            <div className="font-bold text-white font-mono mt-0.5 truncate">
+          <div className="p-4 bg-[#fafafa] rounded-2xl border border-zinc-100">
+            <span className="text-[#767676] block text-[10px] font-mono font-bold">LEVEL 1 GENERAL</span>
+            <div className="font-bold text-[#111111] font-mono mt-1 truncate">
               {bundle?.general_model_id || 'lightgbm_deployable_subset'}
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-1 block">
+            <span className="text-[10px] text-emerald-700 font-bold font-mono mt-1 block">
               STATUS: READY (SHA-256 Verified)
             </span>
           </div>
 
-          <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-            <span className="text-slate-500 block text-[10px] font-mono">LEVEL 1 ISP ANOMALY</span>
-            <div className="font-bold text-white font-mono mt-0.5 truncate">
+          <div className="p-4 bg-[#fafafa] rounded-2xl border border-zinc-100">
+            <span className="text-[#767676] block text-[10px] font-mono font-bold">LEVEL 1 ISP ANOMALY</span>
+            <div className="font-bold text-[#111111] font-mono mt-1 truncate">
               {bundle?.anomaly_model_id || 'isolationforest_anomaly_tenant'}
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-1 block">
+            <span className="text-[10px] text-emerald-700 font-bold font-mono mt-1 block">
               STATUS: ACTIVE (Isolated Baseline)
             </span>
           </div>
 
-          <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-            <span className="text-slate-500 block text-[10px] font-mono">SPECIALIST 1 (DDOS)</span>
-            <div className="font-bold text-white font-mono mt-0.5 truncate">
+          <div className="p-4 bg-[#fafafa] rounded-2xl border border-zinc-100">
+            <span className="text-[#767676] block text-[10px] font-mono font-bold">SPECIALIST 1 (DDOS)</span>
+            <div className="font-bold text-[#111111] font-mono mt-1 truncate">
               lightgbm_ddos_specialist
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-1 block">
+            <span className="text-[10px] text-emerald-700 font-bold font-mono mt-1 block">
               STATUS: ROUTED ON BURST
             </span>
           </div>
 
-          <div className="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-            <span className="text-slate-500 block text-[10px] font-mono">SPECIALIST 2 (SCANNING)</span>
-            <div className="font-bold text-white font-mono mt-0.5 truncate">
+          <div className="p-4 bg-[#fafafa] rounded-2xl border border-zinc-100">
+            <span className="text-[#767676] block text-[10px] font-mono font-bold">SPECIALIST 2 (SCANNING)</span>
+            <div className="font-bold text-[#111111] font-mono mt-1 truncate">
               lightgbm_scanning_specialist
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-1 block">
+            <span className="text-[10px] text-emerald-700 font-bold font-mono mt-1 block">
               STATUS: ROUTED ON SYN/PROBE
             </span>
           </div>
@@ -186,25 +188,27 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
       </div>
 
       {/* 2. Hierarchical FCS-HMD Topology Visualizer */}
-      <div className="cyber-card p-5">
-        <div className="flex items-center space-x-2 mb-4">
-          <GitBranch className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-bold text-white tracking-wide">
-            FCS-HMD Hierarchical Multi-Model Architecture & Routing Topology
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-1.5 rounded-xl bg-purple-50 text-purple-600">
+            <GitBranch className="w-4 h-4" />
+          </div>
+          <h3 className="text-sm font-extrabold text-[#111111]">
+            FCS-HMD Architecture & Conditional Routing Topology
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Layer 1 */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-indigo-800/50 space-y-2">
-            <div className="flex items-center justify-between text-indigo-400 font-bold text-xs uppercase">
+          <div className="p-4 rounded-2xl bg-[#fafafa] border border-zinc-100 space-y-2">
+            <div className="flex items-center justify-between text-indigo-700 font-bold text-xs uppercase">
               <span>Layer 1: Telemetry & Ingestion</span>
               <Activity className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs font-bold text-[#111111]">
               30-Second Event-Time Tumbling Window
             </p>
-            <div className="text-[11px] font-mono text-slate-400 space-y-1">
+            <div className="text-[11px] font-mono text-[#5f5f5f] space-y-1">
               <div>• 14 NetFlow Features</div>
               <div>• 60s Lateness Tolerant</div>
               <div>• Deduplicated Flow Stream</div>
@@ -212,15 +216,15 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
           </div>
 
           {/* Layer 2 */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-purple-800/50 space-y-2">
-            <div className="flex items-center justify-between text-purple-400 font-bold text-xs uppercase">
+          <div className="p-4 rounded-2xl bg-[#fafafa] border border-zinc-100 space-y-2">
+            <div className="flex items-center justify-between text-purple-700 font-bold text-xs uppercase">
               <span>Layer 2: Level 1 Gating</span>
               <Server className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs font-bold text-[#111111]">
               Dual Level-1 Detection
             </p>
-            <div className="text-[11px] font-mono text-slate-400 space-y-1">
+            <div className="text-[11px] font-mono text-[#5f5f5f] space-y-1">
               <div>• General Threat Detector</div>
               <div>• Tenant Anomaly Detector</div>
               <div>• Benign Short-Circuit (&lt;0.35)</div>
@@ -228,31 +232,31 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
           </div>
 
           {/* Layer 3 */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-amber-800/50 space-y-2">
-            <div className="flex items-center justify-between text-amber-400 font-bold text-xs uppercase">
+          <div className="p-4 rounded-2xl bg-[#fafafa] border border-zinc-100 space-y-2">
+            <div className="flex items-center justify-between text-amber-700 font-bold text-xs uppercase">
               <span>Layer 3: Conditional Router</span>
               <Network className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs font-bold text-[#111111]">
               Eligible Attack Specialists
             </p>
-            <div className="text-[11px] font-mono text-slate-400 space-y-1">
+            <div className="text-[11px] font-mono text-[#5f5f5f] space-y-1">
               <div>• DDoS Specialist (Volumetric)</div>
               <div>• Scanning Specialist (SYN/Probe)</div>
-              <div className="text-slate-500">• Botnet: Ineligible (No DNS DPI)</div>
+              <div className="text-[#767676]">• Botnet: Ineligible (No DNS DPI)</div>
             </div>
           </div>
 
           {/* Layer 4 */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-emerald-800/50 space-y-2">
-            <div className="flex items-center justify-between text-emerald-400 font-bold text-xs uppercase">
+          <div className="p-4 rounded-2xl bg-[#fafafa] border border-zinc-100 space-y-2">
+            <div className="flex items-center justify-between text-emerald-700 font-bold text-xs uppercase">
               <span>Layer 4: Evidence Fusion</span>
               <ShieldCheck className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs font-bold text-[#111111]">
               Deterministic Fusion Engine
             </p>
-            <div className="text-[11px] font-mono text-slate-400 space-y-1">
+            <div className="text-[11px] font-mono text-[#5f5f5f] space-y-1">
               <div>• Weighted Bayesian Combination</div>
               <div>• Specialist Dominance (0.55)</div>
               <div>• Deterministic Rules Floor</div>
@@ -263,65 +267,67 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
 
       {/* 3. Benchmark Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-        <div className="cyber-card p-5 border-cyan-500/30">
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <span className="text-[10px] font-bold text-[#767676] uppercase tracking-wider block mb-1">
             Hierarchical Ensemble PR-AUC
           </span>
-          <div className="text-2xl font-bold font-mono text-cyan-400">
+          <div className="text-3xl font-extrabold font-mono text-blue-700">
             95.09%
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            FCS-HMD Full Hierarchical Evaluation
+          <div className="text-xs text-[#5f5f5f] font-medium mt-1">
+            FCS-HMD Full Evaluation
           </div>
         </div>
 
-        <div className="cyber-card p-5 border-emerald-500/30">
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <span className="text-[10px] font-bold text-[#767676] uppercase tracking-wider block mb-1">
             Ensemble F1-Score
           </span>
-          <div className="text-2xl font-bold font-mono text-emerald-400">
+          <div className="text-3xl font-extrabold font-mono text-emerald-700">
             91.67%
           </div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className="text-xs text-[#5f5f5f] font-medium mt-1">
             Deterministic Evidence Fusion
           </div>
         </div>
 
-        <div className="cyber-card p-5 border-purple-500/30">
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <span className="text-[10px] font-bold text-[#767676] uppercase tracking-wider block mb-1">
             Router Overhead (p95)
           </span>
-          <div className="text-2xl font-bold font-mono text-purple-400">
+          <div className="text-3xl font-extrabold font-mono text-purple-700">
             24.9 μs
           </div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className="text-xs text-[#5f5f5f] font-medium mt-1">
             Sub-millisecond conditional branch
           </div>
         </div>
 
-        <div className="cyber-card p-5 border-amber-500/30">
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <span className="text-[10px] font-bold text-[#767676] uppercase tracking-wider block mb-1">
             ISP Tenant Anomaly Status
           </span>
-          <div className="text-lg font-bold font-mono text-amber-400 truncate">
+          <div className="text-xl font-extrabold font-mono text-amber-700 truncate mt-1">
             {ispStatus?.baseline_status || 'CALIBRATED'}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Isolation: Strict Per-ISP Baseline
+          <div className="text-xs text-[#5f5f5f] font-medium mt-1">
+            Strict Per-ISP Baseline
           </div>
         </div>
       </div>
 
       {/* 4. Real-Time Routing Decisions Feed */}
-      <div className="cyber-card p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <Network className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-bold text-white tracking-wide">
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-xl bg-blue-50 text-blue-600">
+              <Network className="w-4 h-4" />
+            </div>
+            <h3 className="text-sm font-extrabold text-[#111111]">
               Recent Conditional Routing Decisions
             </h3>
           </div>
-          <span className="text-[11px] font-mono text-slate-400">
+          <span className="text-xs font-mono text-[#767676] bg-[#f0f0f2] px-3 py-1 rounded-full font-medium">
             Live Operational Log
           </span>
         </div>
@@ -329,18 +335,18 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs font-mono">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                <th className="py-2.5 px-3">Timestamp</th>
-                <th className="py-2.5 px-3">Level 1 (Gen / Anom)</th>
-                <th className="py-2.5 px-3">Routing Decision</th>
-                <th className="py-2.5 px-3">Trigger Rationale</th>
-                <th className="py-2.5 px-3">Latency</th>
+              <tr className="border-b border-zinc-100 text-[11px] font-bold text-[#767676] uppercase tracking-wider">
+                <th className="py-3 px-3">Timestamp</th>
+                <th className="py-3 px-3">Level 1 (Gen / Anom)</th>
+                <th className="py-3 px-3">Routing Decision</th>
+                <th className="py-3 px-3">Trigger Rationale</th>
+                <th className="py-3 px-3">Latency</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-zinc-100">
               {routingDecisions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-4 text-center text-slate-500">
+                  <td colSpan={5} className="py-8 text-center text-[#767676] font-medium">
                     No routing decisions recorded yet in this session.
                   </td>
                 </tr>
@@ -360,28 +366,28 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
                   }
 
                   return (
-                    <tr key={rd.decision_id} className="hover:bg-slate-800/30">
-                      <td className="py-2.5 px-3 text-slate-400">
+                    <tr key={rd.decision_id} className="hover:bg-[#fafafa]">
+                      <td className="py-3 px-3 text-[#767676]">
                         {new Date(rd.created_at).toLocaleTimeString()}
                       </td>
-                      <td className="py-2.5 px-3 text-cyan-400">
+                      <td className="py-3 px-3 text-blue-700 font-bold">
                         {(rd.level1_general_score * 100).toFixed(1)}% / {(rd.level1_anomaly_score * 100).toFixed(1)}%
                       </td>
-                      <td className="py-2.5 px-3">
+                      <td className="py-3 px-3">
                         {routed.length > 0 ? (
-                          <span className="text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800 text-[10px]">
+                          <span className="text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 text-xs font-bold">
                             ROUTED: {routed.join(', ')}
                           </span>
                         ) : (
-                          <span className="text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800 text-[10px]">
+                          <span className="text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 text-xs font-bold">
                             SHORT-CIRCUITED (NORMAL)
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-3 text-slate-300 max-w-xs truncate font-sans text-[11px]">
+                      <td className="py-3 px-3 text-[#5f5f5f] max-w-xs truncate font-sans text-xs font-medium">
                         {reasons.join('; ') || 'Threshold evaluation completed'}
                       </td>
-                      <td className="py-2.5 px-3 text-purple-400">
+                      <td className="py-3 px-3 text-purple-700 font-bold">
                         {rd.routing_latency_us.toFixed(1)} μs
                       </td>
                     </tr>
@@ -394,15 +400,17 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
       </div>
 
       {/* 5. Feature Parity & Contract Schema */}
-      <div className="cyber-card p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <Layers className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-bold text-white tracking-wide">
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-xl bg-blue-50 text-blue-600">
+              <Layers className="w-4 h-4" />
+            </div>
+            <h3 className="text-sm font-extrabold text-[#111111]">
               Training-Inference Feature Parity Contract (14 Features)
             </h3>
           </div>
-          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+          <span className="text-xs font-mono text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 font-bold">
             SCHEMA VALIDATED
           </span>
         </div>
@@ -410,22 +418,22 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                <th className="py-2.5 px-3">#</th>
-                <th className="py-2.5 px-3">Feature Name</th>
-                <th className="py-2.5 px-3">Data Type</th>
-                <th className="py-2.5 px-3">Semantic Description</th>
-                <th className="py-2.5 px-3">Missing Value Treatment</th>
+              <tr className="border-b border-zinc-100 text-[11px] font-bold text-[#767676] uppercase tracking-wider">
+                <th className="py-3 px-3">#</th>
+                <th className="py-3 px-3">Feature Name</th>
+                <th className="py-3 px-3">Data Type</th>
+                <th className="py-3 px-3">Semantic Description</th>
+                <th className="py-3 px-3">Missing Value Treatment</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-zinc-100 font-mono">
               {(modelDetails?.deployable_feature_schema || []).map((feat, idx) => (
-                <tr key={feat.name} className="hover:bg-slate-800/30">
-                  <td className="py-2.5 px-3 text-slate-500">{idx + 1}</td>
-                  <td className="py-2.5 px-3 text-cyan-400 font-bold">{feat.name}</td>
-                  <td className="py-2.5 px-3 text-purple-400">{feat.type}</td>
-                  <td className="py-2.5 px-3 text-slate-300 font-sans">{feat.description}</td>
-                  <td className="py-2.5 px-3 text-slate-400">Strict Contract Zero/Median</td>
+                <tr key={feat.name} className="hover:bg-[#fafafa]">
+                  <td className="py-3 px-3 text-[#767676]">{idx + 1}</td>
+                  <td className="py-3 px-3 text-blue-700 font-bold">{feat.name}</td>
+                  <td className="py-3 px-3 text-purple-700">{feat.type}</td>
+                  <td className="py-3 px-3 text-[#111111] font-sans font-medium">{feat.description}</td>
+                  <td className="py-3 px-3 text-[#767676]">Strict Contract Zero/Median</td>
                 </tr>
               ))}
             </tbody>
@@ -434,12 +442,12 @@ export const ModelMonitoringPage: React.FC<ModelMonitoringPageProps> = ({
       </div>
 
       {/* 6. Verification & Lineage Notes */}
-      <div className="cyber-card p-5 border-slate-800 bg-slate-900/40 text-xs space-y-2">
-        <h4 className="font-bold text-white uppercase text-[11px] flex items-center space-x-2">
-          <ShieldCheck className="w-4 h-4 text-cyan-400" />
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] text-xs space-y-3">
+        <h4 className="font-extrabold text-[#111111] uppercase text-xs flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-[#e60023]" />
           <span>FCS-HMD Multi-Model Safety & Fallback Guarantees</span>
         </h4>
-        <ul className="list-disc pl-5 text-slate-400 space-y-1">
+        <ul className="list-disc pl-5 text-[#5f5f5f] space-y-1.5 font-medium leading-relaxed">
           <li>All constituent model artifacts are cryptographically verified via SHA-256 digests prior to bundle activation.</li>
           <li>If a specialist encounters a timeout or artifact error, the engine seamlessly falls back to Level 1 general detection without failing ingestion.</li>
           <li>Missing models never fabricate 0.0 or benign scores; unscored models are explicitly marked UNKNOWN or DEGRADED.</li>

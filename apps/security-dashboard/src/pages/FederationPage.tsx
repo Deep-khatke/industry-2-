@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { api } from '../services/api';
 import {
   Share2,
   Shield,
   Lock,
   Cpu,
   Activity,
-  AlertCircle,
   CheckCircle2,
   RefreshCw,
   Users,
-  Database,
-  Sliders,
-  FileText,
   Play,
-  ArrowRight,
 } from 'lucide-react';
 
 interface FederationStatus {
@@ -28,54 +24,44 @@ interface FederationStatus {
   total_isp_participants: number;
   min_reconstruction_threshold: number;
   registered_candidates_count: number;
-  latest_candidate: string | null;
-  zero_cost_policy: string;
 }
 
 interface Participant {
   participant_id: string;
   name: string;
-  role: string;
-  connection_status: string;
   data_partition: string;
-  partition_size_bytes: number;
+  connection_status: string;
   cumulative_epsilon: number;
   remaining_epsilon: number;
-  max_epsilon: number;
-  target_delta: number;
-  is_budget_exhausted: boolean;
   eligibility_status: string;
 }
 
 interface CandidateModel {
   candidate_id?: string;
   model_id?: string;
-  model_type?: string;
-  framework?: string;
-  status: string;
+  aggregation_protocol?: string;
   model_digest?: string;
   hash?: string;
-  aggregation_protocol?: string;
-  test_metrics?: Record<string, number>;
+  status: string;
 }
 
 export const FederationPage: React.FC = () => {
   const [status, setStatus] = useState<FederationStatus | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [candidates, setCandidates] = useState<CandidateModel[]>([]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'participants' | 'privacy' | 'secagg' | 'comparison' | 'governance'>('overview');
   const [loading, setLoading] = useState<boolean>(true);
-  const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'participants' | 'privacy' | 'secagg' | 'comparison' | 'governance'>('overview');
   const [simMessage, setSimMessage] = useState<string | null>(null);
+  const [runningSimulation, setRunningSimulation] = useState<boolean>(false);
   const [dropoutResult, setDropoutResult] = useState<any>(null);
 
   const fetchFederationData = async () => {
     setLoading(true);
     try {
       const [statusRes, partRes, candRes] = await Promise.all([
-        fetch('/v1/federation/status').then((r) => r.json()).catch(() => null),
-        fetch('/v1/federation/participants').then((r) => r.json()).catch(() => null),
-        fetch('/v1/federation/models').then((r) => r.json()).catch(() => null),
+        api.getFederationStatus().catch(() => null),
+        api.getFederationParticipants().catch(() => null),
+        api.getFederationModels().catch(() => null),
       ]);
 
       if (statusRes) setStatus(statusRes);
@@ -96,12 +82,7 @@ export const FederationPage: React.FC = () => {
     setRunningSimulation(true);
     setSimMessage(`Executing 1-round simulation (${profile} profile)...`);
     try {
-      const res = await fetch('/v1/dev/federation/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profile, partition: 'iid', rounds: 1 }),
-      });
-      const data = await res.json();
+      const data = await api.runFederationSimulation({ profile, partition: 'iid', rounds: 1 });
       if (data.status === 'COMPLETED') {
         setSimMessage(`Success! Round completed. Test F1: ${(data.eval_metrics?.f1 || 0).toFixed(4)}, Candidate: ${data.candidate_id || 'Registered'}`);
       } else {
@@ -118,12 +99,7 @@ export const FederationPage: React.FC = () => {
   const testDropoutThreshold = async (dropCount: number) => {
     const dropped = dropCount === 1 ? ['isp_02'] : dropCount === 2 ? ['isp_02', 'isp_04'] : ['isp_01', 'isp_02', 'isp_03'];
     try {
-      const res = await fetch('/v1/dev/federation/simulate-dropout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dropped_clients: dropped }),
-      });
-      const data = await res.json();
+      const data = await api.simulateDropout(dropped);
       setDropoutResult(data);
     } catch (e: any) {
       setDropoutResult({ error: e.message });
@@ -131,37 +107,43 @@ export const FederationPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 font-sans">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
-        <div>
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
-              <Share2 className="w-6 h-6" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-700 shrink-0">
+            <Share2 className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-50 text-cyan-800 border border-cyan-200">
+                PHASE 6 PRIVACY-PRESERVING FL
+              </span>
+              <span className="px-3 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                ZERO-COST CPU VERIFIED
+              </span>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white tracking-wide">
-                Federated Learning Operations (FCS-PFL)
-              </h1>
-              <p className="text-sm text-slate-400">
-                Privacy-Preserving Threat Intelligence & Multi-ISP Collaborative Defense Architecture v1.2
-              </p>
-            </div>
+            <h1 className="text-xl font-extrabold text-[#111111] mt-1">
+              Federated Learning Operations (FCS-PFL)
+            </h1>
+            <p className="text-xs text-[#767676] font-medium">
+              Privacy-Preserving Threat Intelligence & Multi-ISP Collaborative Defense Architecture v1.2
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => triggerSimulation('protected')}
             disabled={runningSimulation}
-            className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm flex items-center space-x-2 transition disabled:opacity-50"
+            className="px-4 py-2.5 rounded-full bg-[#e60023] hover:bg-[#bd081c] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition disabled:opacity-50 cursor-pointer"
           >
-            <Play className="w-4 h-4" />
+            <Play className="w-3.5 h-3.5" />
             <span>{runningSimulation ? 'Running...' : 'Run Protected FL Round'}</span>
           </button>
           <button
             onClick={fetchFederationData}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            className="p-2.5 rounded-full bg-[#f0f0f2] hover:bg-[#e4e4e7] text-[#111111] transition cursor-pointer"
             title="Refresh"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -170,66 +152,66 @@ export const FederationPage: React.FC = () => {
       </div>
 
       {simMessage && (
-        <div className="p-4 rounded-xl bg-cyan-950/40 border border-cyan-800/60 text-cyan-200 text-sm flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-medium flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Activity className="w-4 h-4 text-cyan-400" />
+            <Activity className="w-4 h-4 text-blue-600 shrink-0" />
             <span>{simMessage}</span>
           </div>
-          <button onClick={() => setSimMessage(null)} className="text-slate-400 hover:text-white">✕</button>
+          <button onClick={() => setSimMessage(null)} className="text-[#767676] hover:text-[#111111] font-bold">✕</button>
         </div>
       )}
 
       {/* Primary KPI Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="p-5 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <div className="text-xs font-mono font-bold text-cyan-800 uppercase tracking-wider mb-1 flex items-center justify-between">
             <span>Federation Status</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-xl font-bold text-white">{status?.status || 'OPERATIONAL'}</div>
-          <div className="text-xs text-slate-400 mt-2 font-mono">
+          <div className="text-2xl font-extrabold text-[#111111]">{status?.status || 'OPERATIONAL'}</div>
+          <div className="text-xs text-[#767676] mt-2 font-mono font-medium">
             Flower 1.42.0 • SecAgg+ • Opacus
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-            <span>ISP Participant Cohort</span>
-            <Users className="w-4 h-4 text-cyan-400" />
+        <div className="p-5 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <div className="text-xs font-mono font-bold text-blue-800 uppercase tracking-wider mb-1 flex items-center justify-between">
+            <span>ISP Cohort</span>
+            <Users className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-xl font-bold text-white">7 Simulated ISPs</div>
-          <div className="text-xs text-slate-400 mt-2 font-mono">
+          <div className="text-2xl font-extrabold text-[#111111]">7 Simulated ISPs</div>
+          <div className="text-xs text-[#767676] mt-2 font-mono font-medium">
             Threshold: k=5 of 7 required
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+        <div className="p-5 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <div className="text-xs font-mono font-bold text-purple-800 uppercase tracking-wider mb-1 flex items-center justify-between">
             <span>Active General Detector</span>
-            <Cpu className="w-4 h-4 text-blue-400" />
+            <Cpu className="w-4 h-4 text-purple-600" />
           </div>
-          <div className="text-sm font-bold text-white truncate" title={status?.active_general_model}>
-            {status?.active_general_model || 'lightgbm_deployable_subset'}
+          <div className="text-base font-extrabold text-[#111111] truncate" title={status?.active_general_model}>
+            {status?.active_general_model || 'lightgbm_deployable'}
           </div>
-          <div className="text-xs text-emerald-400 mt-2 font-mono">
+          <div className="text-xs text-emerald-700 mt-2 font-mono font-bold">
             Bundle Status: {status?.bundle_status || 'ACTIVE'}
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80 backdrop-blur">
-          <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+        <div className="p-5 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <div className="text-xs font-mono font-bold text-emerald-800 uppercase tracking-wider mb-1 flex items-center justify-between">
             <span>Cost Policy</span>
-            <Shield className="w-4 h-4 text-emerald-400" />
+            <Shield className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-xl font-bold text-emerald-400">₹0.00 / $0.00</div>
-          <div className="text-xs text-slate-400 mt-2 font-mono">
+          <div className="text-2xl font-extrabold text-emerald-700">₹0.00 / $0.00</div>
+          <div className="text-xs text-[#767676] mt-2 font-mono font-medium">
             Zero Paid Cloud Services
           </div>
         </div>
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex border-b border-slate-800 space-x-6 text-sm font-medium">
+      <div className="flex flex-wrap gap-2 border-b border-zinc-200 pb-2">
         {[
           { id: 'overview', label: 'Overview & Architecture' },
           { id: 'participants', label: 'Participant Health (7 ISPs)' },
@@ -241,10 +223,10 @@ export const FederationPage: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`pb-3 transition-colors relative ${
+            className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
               activeTab === tab.id
-                ? 'text-cyan-400 font-semibold border-b-2 border-cyan-400'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#111111] text-white shadow-sm'
+                : 'bg-white text-[#767676] hover:text-[#111111] hover:bg-zinc-100 border border-zinc-200/80'
             }`}
           >
             {tab.label}
@@ -255,31 +237,31 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 1: Overview */}
       {activeTab === 'overview' && (
         <div className="space-y-6">
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-cyan-400" />
-              <span>Hierarchical Multi-Model Architecture & Isolation Boundaries</span>
+          <div className="p-6 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
+            <h3 className="text-sm font-extrabold text-[#111111] flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-indigo-600" />
+              <span>Hierarchical Multi-Model Architecture &amp; Isolation Boundaries</span>
             </h3>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              FCS-PFL implements collaborative federated learning solely for the <strong>shared general intrusion detection MLP</strong>.
-              In strict accordance with FCS Architecture v1.2, <strong>tenant anomaly detectors</strong> (IsolationForest / Autoencoder)
-              and specialized threat classifiers (DDoS, Port Scan, Botnet) remain <strong>strictly tenant-local</strong> and are never federated.
+            <p className="text-xs text-[#767676] leading-relaxed font-medium">
+              FCS-PFL implements collaborative federated learning solely for the <strong className="text-[#111111]">shared general intrusion detection MLP</strong>.
+              In strict accordance with FCS Architecture v1.2, <strong className="text-[#111111]">tenant anomaly detectors</strong> (IsolationForest / Autoencoder)
+              and specialized threat classifiers (DDoS, Port Scan, Botnet) remain <strong className="text-[#111111]">strictly tenant-local</strong> and are never federated.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60">
-                <div className="text-xs font-mono text-cyan-400 uppercase">Shared Federated Model</div>
-                <div className="font-semibold text-white mt-1">PyTorch TabularMLPNet</div>
-                <div className="text-xs text-slate-400 mt-1">14 deployable NetFlow features, Opacus GroupNorm, binary attack classification.</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[11px] font-mono font-bold text-blue-700 uppercase">Shared Federated Model</div>
+                <div className="font-extrabold text-[#111111] text-sm mt-1">PyTorch TabularMLPNet</div>
+                <div className="text-xs text-[#767676] mt-1 font-medium">14 deployable NetFlow features, Opacus GroupNorm, binary attack classification.</div>
               </div>
-              <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60">
-                <div className="text-xs font-mono text-purple-400 uppercase">Tenant-Local Anomaly</div>
-                <div className="font-semibold text-white mt-1">IsolationForest / Autoencoder</div>
-                <div className="text-xs text-slate-400 mt-1">Calibrated on private tenant traffic. Kept outside federation to preserve privacy.</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[11px] font-mono font-bold text-purple-700 uppercase">Tenant-Local Anomaly</div>
+                <div className="font-extrabold text-[#111111] text-sm mt-1">IsolationForest / Autoencoder</div>
+                <div className="text-xs text-[#767676] mt-1 font-medium">Calibrated on private tenant traffic. Kept outside federation to preserve privacy.</div>
               </div>
-              <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/60">
-                <div className="text-xs font-mono text-emerald-400 uppercase">Tenant Response Invariant</div>
-                <div className="font-semibold text-white mt-1">Manual Response Center</div>
-                <div className="text-xs text-slate-400 mt-1">AUTO mode permanently disabled. Mitigation requires human operator sign-off.</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[11px] font-mono font-bold text-emerald-800 uppercase">Tenant Response Invariant</div>
+                <div className="font-extrabold text-[#111111] text-sm mt-1">Manual Response Center</div>
+                <div className="text-xs text-[#767676] mt-1 font-medium">AUTO mode permanently disabled. Mitigation requires human operator sign-off.</div>
               </div>
             </div>
           </div>
@@ -289,9 +271,9 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 2: Participant Health */}
       {activeTab === 'participants' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-slate-800 overflow-hidden bg-slate-900/40">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-800/60 text-xs font-mono uppercase text-slate-400 border-b border-slate-800">
+          <div className="rounded-3xl border border-[#ebebeb] overflow-hidden bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-zinc-200 text-[11px] font-bold text-[#767676] uppercase tracking-wider bg-[#fafafa]">
                 <tr>
                   <th className="py-3 px-4">ISP Participant</th>
                   <th className="py-3 px-4">Partition File</th>
@@ -301,20 +283,20 @@ export const FederationPage: React.FC = () => {
                   <th className="py-3 px-4">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-zinc-100 font-mono">
                 {participants.map((p) => (
-                  <tr key={p.participant_id} className="hover:bg-slate-800/30">
-                    <td className="py-3 px-4 font-medium text-white flex items-center space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                  <tr key={p.participant_id} className="hover:bg-[#fafafa]">
+                    <td className="py-3 px-4 font-bold text-[#111111] flex items-center space-x-2 font-sans">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                       <span>{p.participant_id}</span>
-                      <span className="text-xs text-slate-500 font-normal">({p.name})</span>
+                      <span className="text-xs text-[#767676] font-normal">({p.name})</span>
                     </td>
-                    <td className="py-3 px-4 font-mono text-xs text-slate-400">{p.data_partition}</td>
-                    <td className="py-3 px-4 font-mono text-xs text-emerald-400">{p.connection_status}</td>
-                    <td className="py-3 px-4 font-mono text-xs">{p.cumulative_epsilon.toFixed(4)}</td>
-                    <td className="py-3 px-4 font-mono text-xs text-cyan-400">{p.remaining_epsilon.toFixed(4)}</td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    <td className="py-3 px-4 text-[#767676]">{p.data_partition}</td>
+                    <td className="py-3 px-4 text-emerald-700 font-bold">{p.connection_status}</td>
+                    <td className="py-3 px-4 text-[#111111]">{p.cumulative_epsilon.toFixed(4)}</td>
+                    <td className="py-3 px-4 text-blue-700 font-bold">{p.remaining_epsilon.toFixed(4)}</td>
+                    <td className="py-3 px-4 font-sans">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                         {p.eligibility_status}
                       </span>
                     </td>
@@ -329,32 +311,32 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 3: Differential Privacy */}
       {activeTab === 'privacy' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-xl bg-slate-900/50 border border-slate-800 space-y-3">
-            <h3 className="text-base font-bold text-white flex items-center space-x-2">
-              <Lock className="w-4 h-4 text-cyan-400" />
-              <span>Opacus DP-SGD Engine & Cumulative Accounting</span>
+          <div className="p-6 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-3">
+            <h3 className="text-sm font-extrabold text-[#111111] flex items-center space-x-2">
+              <Lock className="w-4 h-4 text-blue-600" />
+              <span>Opacus DP-SGD Engine &amp; Cumulative Accounting</span>
             </h3>
-            <p className="text-sm text-slate-300">
+            <p className="text-xs text-[#767676] leading-relaxed font-medium">
               Each simulated ISP trains locally using Opacus <code>PrivacyEngine</code> with per-example gradient clipping
               and calibrated Gaussian noise addition. Privacy expenditure is tracked by a durable SQLite state machine
               preventing budget exhaustion or double-spending.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 font-mono text-xs">
-              <div className="p-3 rounded-lg bg-slate-800/40 border border-slate-700/60">
-                <div className="text-slate-400">Protected Unit</div>
-                <div className="text-cyan-400 font-bold mt-1">Single NetFlow Record</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[#767676] font-sans font-medium">Protected Unit</div>
+                <div className="text-blue-700 font-bold mt-1 text-sm">Single Flow Record</div>
               </div>
-              <div className="p-3 rounded-lg bg-slate-800/40 border border-slate-700/60">
-                <div className="text-slate-400">Target Delta (δ)</div>
-                <div className="text-cyan-400 font-bold mt-1">1.0e-05</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[#767676] font-sans font-medium">Target Delta (δ)</div>
+                <div className="text-blue-700 font-bold mt-1 text-sm">1.0e-05</div>
               </div>
-              <div className="p-3 rounded-lg bg-slate-800/40 border border-slate-700/60">
-                <div className="text-slate-400">Max Grad Norm (C)</div>
-                <div className="text-cyan-400 font-bold mt-1">1.0</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[#767676] font-sans font-medium">Max Grad Norm (C)</div>
+                <div className="text-blue-700 font-bold mt-1 text-sm">1.0</div>
               </div>
-              <div className="p-3 rounded-lg bg-slate-800/40 border border-slate-700/60">
-                <div className="text-slate-400">Noise Multiplier (σ)</div>
-                <div className="text-cyan-400 font-bold mt-1">1.1</div>
+              <div className="p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb]">
+                <div className="text-[#767676] font-sans font-medium">Noise Multiplier (σ)</div>
+                <div className="text-blue-700 font-bold mt-1 text-sm">1.1</div>
               </div>
             </div>
           </div>
@@ -364,40 +346,40 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 4: Secure Aggregation */}
       {activeTab === 'secagg' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-xl bg-slate-900/50 border border-slate-800 space-y-3">
-            <h3 className="text-base font-bold text-white flex items-center space-x-2">
-              <Lock className="w-4 h-4 text-purple-400" />
+          <div className="p-6 rounded-3xl bg-white border border-[#ebebeb] shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
+            <h3 className="text-sm font-extrabold text-[#111111] flex items-center space-x-2">
+              <Lock className="w-4 h-4 text-purple-600" />
               <span>Flower SecAgg+ Protocol Verification (Threshold k=5 of 7)</span>
             </h3>
-            <p className="text-sm text-slate-300">
+            <p className="text-xs text-[#767676] leading-relaxed font-medium">
               SecAgg+ coordinates Diffie-Hellman pairwise key agreement, Shamir secret sharing, and pseudo-random
               masking so the central coordinator receives only the sum of parameter vectors, never individual client weights.
             </p>
-            <div className="flex items-center space-x-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2 pt-2">
               <button
                 onClick={() => testDropoutThreshold(1)}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-white border border-slate-700"
+                className="px-3.5 py-2 rounded-full bg-white hover:bg-zinc-100 text-xs font-bold text-[#111111] border border-zinc-200 shadow-sm cursor-pointer"
               >
                 Test 1 Dropout (6 active → Succeed)
               </button>
               <button
                 onClick={() => testDropoutThreshold(2)}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-white border border-slate-700"
+                className="px-3.5 py-2 rounded-full bg-white hover:bg-zinc-100 text-xs font-bold text-[#111111] border border-zinc-200 shadow-sm cursor-pointer"
               >
                 Test 2 Dropouts (5 active = k → Succeed)
               </button>
               <button
                 onClick={() => testDropoutThreshold(3)}
-                className="px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/40 text-xs text-red-300 border border-red-800/60"
+                className="px-3.5 py-2 rounded-full bg-[#fff0f2] hover:bg-[#ffe4e6] text-xs font-bold text-[#e60023] border border-[#fecdd3] shadow-sm cursor-pointer"
               >
                 Test 3 Dropouts (4 active &lt; k → Safe Abort)
               </button>
             </div>
 
             {dropoutResult && (
-              <div className="mt-4 p-4 rounded-xl bg-slate-800/60 border border-slate-700 font-mono text-xs">
-                <div className="text-slate-400 mb-1">Dropout Simulation Output:</div>
-                <pre className="text-cyan-300 overflow-x-auto">{JSON.stringify(dropoutResult, null, 2)}</pre>
+              <div className="mt-4 p-4 rounded-2xl bg-[#f7f7f8] border border-[#ebebeb] font-mono text-xs">
+                <div className="text-[#111111] font-bold mb-1 font-sans">Dropout Simulation Output:</div>
+                <pre className="text-blue-800 overflow-x-auto">{JSON.stringify(dropoutResult, null, 2)}</pre>
               </div>
             )}
           </div>
@@ -407,9 +389,9 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 5: Baseline Comparisons */}
       {activeTab === 'comparison' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-slate-800 overflow-hidden bg-slate-900/40">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-800/60 text-xs font-mono uppercase text-slate-400 border-b border-slate-800">
+          <div className="rounded-3xl border border-[#ebebeb] overflow-hidden bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-zinc-200 text-[11px] font-bold text-[#767676] uppercase tracking-wider bg-[#fafafa]">
                 <tr>
                   <th className="py-3 px-4">Evaluation Baseline</th>
                   <th className="py-3 px-4">Differential Privacy</th>
@@ -418,34 +400,50 @@ export const FederationPage: React.FC = () => {
                   <th className="py-3 px-4">Privacy Boundary</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                <tr className="hover:bg-slate-800/30">
-                  <td className="py-3 px-4 font-semibold text-white">E6-01: Tenant-Only Local Training</td>
-                  <td className="py-3 px-4 text-slate-400">None</td>
-                  <td className="py-3 px-4 text-slate-400">N/A (Local)</td>
-                  <td className="py-3 px-4 font-mono text-xs">0.24 - 0.72</td>
-                  <td className="py-3 px-4 text-xs text-emerald-400">Local Only</td>
+              <tbody className="divide-y divide-zinc-100">
+                <tr className="hover:bg-[#fafafa]">
+                  <td className="py-3 px-4 font-bold text-[#111111]">E6-01: Tenant-Only Local Training</td>
+                  <td className="py-3 px-4 text-[#767676]">None</td>
+                  <td className="py-3 px-4 text-[#767676]">N/A (Local)</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#111111]">0.24 - 0.72</td>
+                  <td className="py-3 px-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Local Only
+                    </span>
+                  </td>
                 </tr>
-                <tr className="hover:bg-slate-800/30">
-                  <td className="py-3 px-4 font-semibold text-white">E6-03: Insecure Research FedAvg</td>
-                  <td className="py-3 px-4 text-slate-400">None</td>
-                  <td className="py-3 px-4 text-slate-400">None</td>
-                  <td className="py-3 px-4 font-mono text-xs">0.82 - 0.88</td>
-                  <td className="py-3 px-4 text-xs text-amber-400">Plaintext Updates</td>
+                <tr className="hover:bg-[#fafafa]">
+                  <td className="py-3 px-4 font-bold text-[#111111]">E6-03: Insecure Research FedAvg</td>
+                  <td className="py-3 px-4 text-[#767676]">None</td>
+                  <td className="py-3 px-4 text-[#767676]">None</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#111111]">0.82 - 0.88</td>
+                  <td className="py-3 px-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                      Plaintext Updates
+                    </span>
+                  </td>
                 </tr>
-                <tr className="hover:bg-slate-800/30">
-                  <td className="py-3 px-4 font-semibold text-white">E6-05: Federated DP-SGD</td>
-                  <td className="py-3 px-4 text-cyan-400">Opacus DP (ε≈2.0)</td>
-                  <td className="py-3 px-4 text-slate-400">None</td>
-                  <td className="py-3 px-4 font-mono text-xs">0.78 - 0.85</td>
-                  <td className="py-3 px-4 text-xs text-cyan-400">DP Record Privacy</td>
+                <tr className="hover:bg-[#fafafa]">
+                  <td className="py-3 px-4 font-bold text-[#111111]">E6-05: Federated DP-SGD</td>
+                  <td className="py-3 px-4 text-blue-700 font-medium">Opacus DP (ε≈2.0)</td>
+                  <td className="py-3 px-4 text-[#767676]">None</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#111111]">0.78 - 0.85</td>
+                  <td className="py-3 px-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                      DP Record Privacy
+                    </span>
+                  </td>
                 </tr>
-                <tr className="hover:bg-slate-800/30 bg-cyan-950/20">
-                  <td className="py-3 px-4 font-semibold text-cyan-300">E6-06: Target Protected Profile (DP + SecAgg+)</td>
-                  <td className="py-3 px-4 text-cyan-400 font-bold">Opacus DP (ε≈2.0)</td>
-                  <td className="py-3 px-4 text-purple-400 font-bold">SecAgg+ (k=5/7)</td>
-                  <td className="py-3 px-4 font-mono text-xs text-emerald-400 font-bold">0.83 - 0.91</td>
-                  <td className="py-3 px-4 text-xs text-emerald-400 font-bold">DP + Cryptographic Masking</td>
+                <tr className="hover:bg-[#fafafa] bg-blue-50/40">
+                  <td className="py-3 px-4 font-extrabold text-[#111111]">E6-06: Target Protected Profile (DP + SecAgg+)</td>
+                  <td className="py-3 px-4 text-blue-700 font-bold">Opacus DP (ε≈2.0)</td>
+                  <td className="py-3 px-4 text-purple-700 font-bold">SecAgg+ (k=5/7)</td>
+                  <td className="py-3 px-4 font-mono text-emerald-700 font-bold">0.83 - 0.91</td>
+                  <td className="py-3 px-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+                      DP + Cryptographic Masking
+                    </span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -456,9 +454,9 @@ export const FederationPage: React.FC = () => {
       {/* Sub-Tab 6: Governance & Registry */}
       {activeTab === 'governance' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-slate-800 overflow-hidden bg-slate-900/40">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-800/60 text-xs font-mono uppercase text-slate-400 border-b border-slate-800">
+          <div className="rounded-3xl border border-[#ebebeb] overflow-hidden bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-zinc-200 text-[11px] font-bold text-[#767676] uppercase tracking-wider bg-[#fafafa]">
                 <tr>
                   <th className="py-3 px-4">Candidate Model ID</th>
                   <th className="py-3 px-4">Protocol</th>
@@ -466,19 +464,19 @@ export const FederationPage: React.FC = () => {
                   <th className="py-3 px-4">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-zinc-100 font-mono">
                 {candidates.map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-800/30">
-                    <td className="py-3 px-4 font-medium text-white">{c.candidate_id || c.model_id}</td>
-                    <td className="py-3 px-4 font-mono text-xs text-cyan-400">{c.aggregation_protocol || 'LOCAL'}</td>
-                    <td className="py-3 px-4 font-mono text-xs text-slate-400">
+                  <tr key={i} className="hover:bg-[#fafafa]">
+                    <td className="py-3 px-4 font-bold text-[#111111]">{c.candidate_id || c.model_id}</td>
+                    <td className="py-3 px-4 text-blue-700">{c.aggregation_protocol || 'LOCAL'}</td>
+                    <td className="py-3 px-4 text-[#767676]">
                       {((c.model_digest || c.hash || '') as string).slice(0, 16)}...
                     </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 rounded text-xs font-mono ${
+                    <td className="py-3 px-4 font-sans">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                         c.status === 'ACTIVE'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                          : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          : 'bg-blue-50 text-blue-800 border border-blue-200'
                       }`}>
                         {c.status}
                       </span>

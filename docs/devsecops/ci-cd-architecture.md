@@ -40,3 +40,4 @@ flowchart TD
 - **Token Permissions**: All workflows explicitly declare `permissions: contents: read`.
 - **Concurrency Control**: Redundant builds on the same branch are automatically cancelled using `cancel-in-progress: true`.
 - **Zero Cloud Charges**: No workflow triggers external cloud APIs, spins up billable runners, or creates storage buckets.
+

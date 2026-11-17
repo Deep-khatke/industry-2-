@@ -42,3 +42,4 @@ Verified under `tests/phase11/security/test_cross_tenant_isolation_matrix.py`:
 - `test_cross_tenant_action_dispatch_denied`: Action creation across tenants rejected.
 - `test_cross_tenant_response_policy_isolation`: Configuration updates contained strictly to caller tenant.
 - `test_exporter_tenant_spoofing_prevented`: Telemetry spoofing rejected.
+

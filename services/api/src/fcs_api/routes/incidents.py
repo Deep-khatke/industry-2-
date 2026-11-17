@@ -141,6 +141,26 @@ def get_incident_history(
     return IncidentManager.get_history(incident_id)
 
 
+@router.get("/recommendations")
+def list_incident_recommendations(
+    tenant_id: str | None = Query(default=None),
+    status: str | None = Query(default=None),
+    user: dict[str, Any] = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Retrieve all defensive action recommendations for the tenant."""
+    target_tenant_id = tenant_id or user.get("tenant_id") or "rural-isp-alpha"
+    verify_tenant_boundary(user, target_tenant_id)
+    with get_db() as conn:
+        query = "SELECT * FROM recommendations WHERE tenant_id = ?"
+        params: list[Any] = [target_tenant_id]
+        if status:
+            query += " AND status = ?"
+            params.append(status)
+        query += " ORDER BY created_at DESC LIMIT 50"
+        rows = conn.execute(query, params).fetchall()
+        return [dict(r) for r in rows]
+
+
 @router.get("/{incident_id}/recommendations")
 def get_incident_recommendations(
     incident_id: str,

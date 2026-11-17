@@ -1,10 +1,10 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:e0bea930-2cee-4193-8cbc-e65c6d0a9014",
+  "serialNumber": "urn:uuid:95dc6f68-364c-4835-9b08-398656fe3754",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-29T12:42:00.967027+00:00",
+    "timestamp": "2026-11-03T05:49:09.673536+00:00",
     "tools": [
       {
         "vendor": "Federated Cyber Shield Architecture Team",
@@ -21,7 +21,7 @@
       "properties": [
         {
           "name": "git:revision",
-          "value": "d5c0cc9062f2"
+          "value": "1226034705cd"
         },
         {
           "name": "fcs:budget_cap",

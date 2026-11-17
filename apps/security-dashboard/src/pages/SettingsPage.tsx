@@ -21,16 +21,16 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Top Banner */}
-      <div className="bg-[#0d131f] border border-slate-800 p-4 rounded-xl flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
-            <Settings className="w-5 h-5" />
+      <div className="bg-white border border-[#ebebeb] p-6 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-zinc-700 flex items-center justify-center shrink-0">
+            <Settings className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white">System Settings & Response Policy</h2>
-            <p className="text-xs text-slate-400">
+            <h2 className="text-base font-extrabold text-[#111111]">System Settings & Policy Matrix</h2>
+            <p className="text-xs text-[#767676] font-medium mt-0.5">
               Tenant boundaries, role permissions, protected infrastructure allowlists, and safety constraints.
             </p>
           </div>
@@ -38,111 +38,117 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       </div>
 
       {/* AUTO Mode Disabled Safety Warning Banner */}
-      <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-600/60 flex items-start space-x-3 text-xs">
-        <AlertOctagon className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+      <div className="p-5 rounded-3xl bg-amber-50 border border-amber-200 flex items-start gap-3.5 text-xs">
+        <AlertOctagon className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <div className="font-bold text-amber-300 uppercase tracking-wide">
-            Automated Execution Disabled (Architecture Invariant)
+          <div className="font-extrabold text-amber-900 uppercase tracking-wide">
+            Automated Direct Router Mitigation Blocked (Gate G13 Invariant)
           </div>
-          <div className="text-slate-300 leading-relaxed">
+          <div className="text-amber-800 font-medium leading-relaxed">
             {policy?.auto_response_status ||
-              'AUTO response is unavailable until the dedicated safety qualification phase.'}
+              'AUTO response is strictly unavailable until physical ISP router hardware qualification.'}
           </div>
-          <div className="text-[11px] text-amber-400/80 font-mono">
-            Phase 4 strictly enforces MANUAL Mode with verified human administrator approval.
+          <div className="text-[11px] text-amber-700 font-mono font-bold">
+            MANUAL Mode is strictly enforced with verified human administrator approval.
           </div>
         </div>
       </div>
 
       {/* Tenant Profile & Current User */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="cyber-card p-5 space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-            <Server className="w-4 h-4 text-cyan-400" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
+          <h3 className="text-sm font-extrabold text-[#111111] flex items-center gap-2.5">
+            <div className="p-2 rounded-2xl bg-blue-50 text-blue-600">
+              <Server className="w-4 h-4" />
+            </div>
             <span>Monitored Tenant Profile</span>
           </h3>
-          <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Tenant Identifier:</span>
-              <span className="text-cyan-400 font-bold">{currentTenant?.tenant_id}</span>
+          <div className="space-y-2.5 text-xs font-mono">
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Tenant Identifier:</span>
+              <span className="text-blue-700 font-bold">{currentTenant?.tenant_id}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">ISP Legal Name:</span>
-              <span className="text-white">{currentTenant?.name}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">ISP Legal Name:</span>
+              <span className="text-[#111111] font-bold">{currentTenant?.name}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Autonomous System (ASN):</span>
-              <span className="text-purple-400 font-bold">{currentTenant?.asn}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Autonomous System (ASN):</span>
+              <span className="text-purple-700 font-bold">{currentTenant?.asn}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Operating Region:</span>
-              <span className="text-slate-300">{currentTenant?.region}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Operating Region:</span>
+              <span className="text-[#111111]">{currentTenant?.region}</span>
             </div>
           </div>
         </div>
 
-        <div className="cyber-card p-5 space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center space-x-2">
-            <User className="w-4 h-4 text-emerald-400" />
+        <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
+          <h3 className="text-sm font-extrabold text-[#111111] flex items-center gap-2.5">
+            <div className="p-2 rounded-2xl bg-emerald-50 text-emerald-600">
+              <User className="w-4 h-4" />
+            </div>
             <span>Current Authenticated Identity</span>
           </h3>
-          <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">User ID:</span>
-              <span className="text-slate-300">{currentUser?.user_id}</span>
+          <div className="space-y-2.5 text-xs font-mono">
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">User ID:</span>
+              <span className="text-[#5f5f5f]">{currentUser?.user_id}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Username:</span>
-              <span className="text-cyan-400 font-bold">{currentUser?.username}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Username:</span>
+              <span className="text-blue-700 font-bold">{currentUser?.username}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Full Name:</span>
-              <span className="text-white">{currentUser?.full_name}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Full Name:</span>
+              <span className="text-[#111111] font-bold">{currentUser?.full_name}</span>
             </div>
-            <div className="flex justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
-              <span className="text-slate-400">Assigned Role:</span>
-              <span className="text-emerald-400 font-bold">{currentUser?.role}</span>
+            <div className="flex justify-between p-3 rounded-2xl bg-[#fafafa] border border-zinc-100">
+              <span className="text-[#767676]">Assigned Role:</span>
+              <span className="text-emerald-700 font-bold">{currentUser?.role}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Role-Based Access Control (RBAC) Permissions Matrix */}
-      <div className="cyber-card p-5">
-        <h3 className="text-sm font-bold text-white mb-3 flex items-center space-x-2">
-          <Shield className="w-4 h-4 text-purple-400" />
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <h3 className="text-sm font-extrabold text-[#111111] mb-4 flex items-center gap-2.5">
+          <div className="p-2 rounded-2xl bg-purple-50 text-purple-600">
+            <Shield className="w-4 h-4" />
+          </div>
           <span>Role-Based Access Control (RBAC) Permissions Matrix</span>
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                <th className="py-2 px-3">Role</th>
-                <th className="py-2 px-3 text-center">View Telemetry & Incidents</th>
-                <th className="py-2 px-3 text-center">Investigate Incidents</th>
-                <th className="py-2 px-3 text-center">Approve Defensive Actions</th>
-                <th className="py-2 px-3 text-center">Manage Tenant Settings</th>
+              <tr className="border-b border-zinc-100 text-[11px] font-bold text-[#767676] uppercase tracking-wider">
+                <th className="py-3 px-3">Role</th>
+                <th className="py-3 px-3 text-center">View Telemetry & Incidents</th>
+                <th className="py-3 px-3 text-center">Investigate Incidents</th>
+                <th className="py-3 px-3 text-center">Approve Defensive Actions</th>
+                <th className="py-3 px-3 text-center">Manage Tenant Settings</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
+            <tbody className="divide-y divide-zinc-100 font-mono">
               {rbacMatrix.map((r) => {
                 const isCurrent = currentUser?.role === r.role;
                 return (
-                  <tr key={r.role} className={isCurrent ? 'bg-cyan-950/30 font-bold' : ''}>
-                    <td className="py-2.5 px-3 text-slate-200">
-                      {r.role} {isCurrent && <span className="text-cyan-400 text-[10px] ml-1">(YOU)</span>}
+                  <tr key={r.role} className={isCurrent ? 'bg-[#fff0f2] font-bold' : 'hover:bg-[#fafafa]'}>
+                    <td className="py-3 px-3 text-[#111111]">
+                      {r.role} {isCurrent && <span className="text-[#e60023] text-[10px] ml-1.5 font-bold">(YOU)</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-center">
-                      <span className="text-emerald-400">✓</span>
+                    <td className="py-3 px-3 text-center">
+                      <span className="text-emerald-700 font-bold">✓</span>
                     </td>
-                    <td className="py-2.5 px-3 text-center">
-                      {r.investigate ? <span className="text-emerald-400">✓</span> : <span className="text-slate-600">—</span>}
+                    <td className="py-3 px-3 text-center">
+                      {r.investigate ? <span className="text-emerald-700 font-bold">✓</span> : <span className="text-[#767676]">—</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-center">
-                      {r.approve ? <span className="text-emerald-400">✓</span> : <span className="text-slate-600">—</span>}
+                    <td className="py-3 px-3 text-center">
+                      {r.approve ? <span className="text-emerald-700 font-bold">✓</span> : <span className="text-[#767676]">—</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-center">
-                      {r.manage ? <span className="text-emerald-400">✓</span> : <span className="text-slate-600">—</span>}
+                    <td className="py-3 px-3 text-center">
+                      {r.manage ? <span className="text-emerald-700 font-bold">✓</span> : <span className="text-[#767676]">—</span>}
                     </td>
                   </tr>
                 );
@@ -153,12 +159,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       </div>
 
       {/* Protected Target Allowlist */}
-      <div className="cyber-card p-5">
-        <h3 className="text-sm font-bold text-white mb-2 flex items-center space-x-2">
-          <Lock className="w-4 h-4 text-red-400" />
+      <div className="bg-white border border-[#ebebeb] rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <h3 className="text-sm font-extrabold text-[#111111] mb-2 flex items-center gap-2.5">
+          <div className="p-2 rounded-2xl bg-[#fff0f2] text-[#e60023]">
+            <Lock className="w-4 h-4" />
+          </div>
           <span>Protected Infrastructure (Strict Modification Ban)</span>
         </h3>
-        <p className="text-xs text-slate-400 mb-3">
+        <p className="text-xs text-[#767676] font-medium mb-4">
           The following loopback, default gateway, broadcast, and core ISP infrastructure subnets are protected by safety policy and cannot be targeted by temporary block or rate-limit actions:
         </p>
         <div className="flex flex-wrap gap-2 text-xs font-mono">
@@ -172,7 +180,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           ]).map((ip) => (
             <span
               key={ip}
-              className="px-2.5 py-1 rounded bg-red-950/60 border border-red-700/60 text-red-400 font-bold"
+              className="px-3.5 py-1.5 rounded-full bg-[#fff0f2] border border-[#fecdd3] text-[#e60023] font-bold"
             >
               {ip}
             </span>

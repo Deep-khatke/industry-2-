@@ -35,3 +35,4 @@ export FCS_DETECTION_MODE="RULES_ONLY"
 ```
 
 In `RULES_ONLY` mode, the deterministic heuristic rules engine (`FCS-R101` through `FCS-R104`) processes all incoming feature windows with zero reliance on tree weights or neural nets.
+

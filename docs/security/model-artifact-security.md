@@ -45,3 +45,4 @@ sequenceDiagram
 As verified in `tests/phase11/resilience/test_fault_injection_and_recovery.py`:
 - In the event of a missing model file, corrupted booster weights, or deserialization error, the detection service catches the error immediately, logs a critical alert, and activates deterministic rules fallback (`FCS-R101..104`).
 - Telemetry processing continues without dropped packets or API crashes.
+

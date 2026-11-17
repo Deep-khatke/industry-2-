@@ -41,3 +41,4 @@ Until all blockers are resolved under funded sovereign programs:
 1. FCS **MUST** operate with `AUTO_RESPONSE_ENABLED=False`.
 2. All defensive actions must execute exclusively through the **Firewall Simulator**.
 3. All telemetry replay must operate against isolated, synthetic, or anonymized datasets.
+

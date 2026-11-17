@@ -45,3 +45,4 @@ SBOMs can be regenerated at any time using the standalone zero-cost tool:
 python tools/sbom/generate_sbom.py
 ```
 Outputs are automatically written to `artifacts/phase11/sbom/`.
+

@@ -54,3 +54,4 @@ flowchart LR
 - **Post-Quantum Algorithm**: NIST FIPS 204 ML-DSA-65 (Module-Lattice-Based Digital Signature Standard).
 - **Dual Verification Model**: Every release manifest and consortium model weight package is signed with both conventional ECDSA P-256 and post-quantum ML-DSA-65.
 - **Fail-Safe Revocation**: If either signature verification fails, the model is rejected and the system falls back to `RULES_ONLY` mode.
+

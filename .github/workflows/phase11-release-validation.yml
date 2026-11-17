@@ -46,3 +46,4 @@ jobs:
       - name: "Run Release Candidate Governance Tests"
         run: |
           pytest tests/phase11/governance/ tests/phase11/response/ -v
+

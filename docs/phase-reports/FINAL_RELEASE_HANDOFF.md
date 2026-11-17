@@ -32,3 +32,4 @@ For downstream operators and research teams seeking to deploy FCS onto live tele
 1. Adhere to all runbooks in `docs/operations/`.
 2. Maintain Gate G13 (`AUTO_LIVE`) in a blocked state until physical router testbeds are funded, provisioned, and qualified per `docs/phase-reports/PHASE10_HANDOFF.md` and `docs/production/production-blockers.md`.
 3. Use the Firewall Simulator for all operational demonstrations and training drills.
+

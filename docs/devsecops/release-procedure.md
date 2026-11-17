@@ -53,3 +53,4 @@ Verify the release verdict in `artifacts/phase11/reports/phase11_verification_su
 - `verdict` MUST equal `"DEVELOPMENT_RELEASE_VERIFIED"`.
 - Gate `G13` MUST remain `"BLOCKED"`.
 - Gates `G01` through `G12`, `G14`, and `G15` MUST equal `"PASS_DEVELOPMENT"`.
+

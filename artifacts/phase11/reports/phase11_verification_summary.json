@@ -1,7 +1,7 @@
 {
   "release_id": "fcs-v1.2.0-rc1-phase11",
   "verdict": "DEVELOPMENT_RELEASE_VERIFIED",
-  "timestamp": "2026-10-29T12:42:28.950837+00:00",
+  "timestamp": "2026-11-03T05:49:38.236374+00:00",
   "budget_policy": "Strictly \u20b90 / $0",
   "zero_cost_compliance": "PASS",
   "gates": {
@@ -98,14 +98,14 @@
   },
   "recovery": {
     "status": "PASS",
-    "rto_seconds": 0.0526,
+    "rto_seconds": 0.18,
     "privacy_spend_preserved": true,
     "auto_live_disabled": true
   },
   "performance": {
     "status": "PASS",
-    "hmd_p50_ms": 11.8168,
-    "pipeline_p95_ms": 612.0811,
-    "throughput_rps": 73.38
+    "hmd_p50_ms": 9.7005,
+    "pipeline_p95_ms": 609.9311,
+    "throughput_rps": 72.84
   }
 }

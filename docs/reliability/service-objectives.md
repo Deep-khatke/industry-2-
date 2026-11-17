@@ -21,3 +21,4 @@ Performance benchmarks were executed using `tools/performance/benchmark_suite.py
 - **CPU Footprint**: LightGBM tree evaluation and Isolation Forest anomaly scoring require less than 1.5 CPU cores at maximum pipeline load.
 - **Memory Footprint**: Working set memory remains bounded under 350 MB RAM for the combined API, feature window buffer, and model registry.
 - **Disk I/O**: SQLite WAL mode minimizes fsync write amplification during continuous flow aggregation.
+

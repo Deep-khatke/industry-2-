@@ -42,3 +42,4 @@ flowchart TD
 4. **Simulator Containment**:
    - All defensive operations execute within `FirewallSimulator`.
    - Gate G13 (`AUTO_LIVE`) is strictly disabled in code and runtime configuration.
+

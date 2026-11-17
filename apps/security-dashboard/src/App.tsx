@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { OverviewPage } from './pages/OverviewPage';
 import { PilotOperationsPage } from './pages/PilotOperationsPage';
-import { ThreatMonitoringPage } from './pages/ThreatMonitoringPage';
 import { IncidentsPage } from './pages/IncidentsPage';
 import { ManualResponsePage } from './pages/ManualResponsePage';
 import { NetworkHealthPage } from './pages/NetworkHealthPage';
@@ -48,6 +48,7 @@ export const App: React.FC = () => {
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [incidentHistory, setIncidentHistory] = useState<IncidentHistory[]>([]);
   const [incidentRecs, setIncidentRecs] = useState<Recommendation[]>([]);
+  const [allRecommendations, setAllRecommendations] = useState<Recommendation[]>([]);
   const [actions, setActions] = useState<ActionRecord[]>([]);
   const [firewallRules, setFirewallRules] = useState<FirewallRule[]>([]);
   const [exporters, setExporters] = useState<Exporter[]>([]);
@@ -106,6 +107,7 @@ export const App: React.FC = () => {
         modelDetRes,
         modelHlthRes,
         policyRes,
+        recsRes,
       ] = await Promise.allSettled([
         api.getTenants(),
         api.getOverview(selectedTenantId),
@@ -116,26 +118,40 @@ export const App: React.FC = () => {
         api.getActiveModel(),
         api.getModelHealth(),
         api.getResponsePolicy(),
+        api.listRecommendations(selectedTenantId),
       ]);
 
-      if (tenantsRes.status === 'fulfilled') setTenants(tenantsRes.value);
+      if (tenantsRes.status === 'fulfilled') setTenants(Array.isArray(tenantsRes.value) ? tenantsRes.value : []);
       if (statsRes.status === 'fulfilled') setStats(statsRes.value);
       if (incidentsRes.status === 'fulfilled') {
-        setIncidents(incidentsRes.value.incidents);
+        const incList = incidentsRes.value?.incidents || (Array.isArray(incidentsRes.value) ? incidentsRes.value : []);
+        setIncidents(incList);
         // Refresh selected incident if open
         if (selectedIncident) {
-          const updated = incidentsRes.value.incidents.find(
-            (i) => i.incident_id === selectedIncident.incident_id
+          const updated = incList.find(
+            (i: Incident) => i.incident_id === selectedIncident.incident_id
           );
           if (updated) setSelectedIncident(updated);
         }
       }
-      if (actionsRes.status === 'fulfilled') setActions(actionsRes.value);
-      if (fwRulesRes.status === 'fulfilled') setFirewallRules(fwRulesRes.value);
-      if (expRes.status === 'fulfilled') setExporters(expRes.value);
+      if (actionsRes.status === 'fulfilled') setActions(Array.isArray(actionsRes.value) ? actionsRes.value : []);
+      if (fwRulesRes.status === 'fulfilled') setFirewallRules(Array.isArray(fwRulesRes.value) ? fwRulesRes.value : []);
+      if (expRes.status === 'fulfilled') {
+        const expData = expRes.value;
+        if (Array.isArray(expData)) {
+          setExporters(expData);
+        } else if (expData && Array.isArray((expData as any).exporters)) {
+          setExporters((expData as any).exporters);
+        } else {
+          setExporters([]);
+        }
+      }
       if (modelDetRes.status === 'fulfilled') setModelDetails(modelDetRes.value);
       if (modelHlthRes.status === 'fulfilled') setModelHealth(modelHlthRes.value);
       if (policyRes.status === 'fulfilled') setPolicy(policyRes.value);
+      if (recsRes.status === 'fulfilled') {
+        setAllRecommendations(Array.isArray(recsRes.value) ? recsRes.value : []);
+      }
     } catch (e) {
       console.error('Error fetching dashboard data:', e);
     } finally {
@@ -268,77 +284,106 @@ export const App: React.FC = () => {
   // Login View
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#070b12] flex items-center justify-center p-4">
-        <div className="cyber-card p-8 max-w-md w-full space-y-6 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.25)]">
+      <div className="min-h-screen bg-[#f7f7f8] flex items-center justify-center p-4 font-sans">
+        <div className="bg-white border border-[#ebebeb] p-8 max-w-sm w-full space-y-6 rounded-3xl shadow-xl">
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-              <ShieldAlert className="w-7 h-7 text-white" />
+            <div className="w-12 h-12 rounded-2xl bg-[#e60023] flex items-center justify-center mx-auto text-white shadow-md">
+              <ShieldAlert className="w-6 h-6 fill-white/20" />
             </div>
-            <h1 className="text-xl font-bold text-white tracking-wider">
-              FEDERATED CYBER SHIELD
+            <h1 className="text-lg font-extrabold text-[#111111] tracking-tight">
+              Federated Cyber Shield
             </h1>
-            <p className="text-xs text-cyan-400 font-mono tracking-widest uppercase">
-              SECURITY OPERATIONS CENTER (SOC) v1.2
+            <p className="text-xs text-[#767676] font-medium tracking-wide">
+              Consortium Security Operations Console
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 text-xs font-mono">
+          <form onSubmit={handleLogin} className="space-y-4 text-xs">
             {loginError && (
-              <div className="p-3 rounded-lg bg-red-950/80 border border-red-700 text-red-300">
+              <div className="p-3 rounded-2xl bg-[#fff0f2] border border-[#fecdd3] text-[#e60023] text-xs font-semibold">
                 {loginError}
               </div>
             )}
 
             <div>
-              <label className="text-slate-400 uppercase text-[10px] block mb-1">
+              <label className="text-[#767676] uppercase text-[10px] font-bold block mb-1.5 px-1">
                 Username
               </label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                <UserIcon className="w-4 h-4 text-[#767676] absolute left-3.5 top-3" />
                 <input
                   type="text"
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-[#f0f0f2] border border-transparent focus:border-[#e60023] focus:bg-white rounded-full pl-10 pr-4 py-2.5 text-[#111111] font-medium focus:outline-none transition-colors"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-slate-400 uppercase text-[10px] block mb-1">
+              <label className="text-[#767676] uppercase text-[10px] font-bold block mb-1.5 px-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                <Lock className="w-4 h-4 text-[#767676] absolute left-3.5 top-3" />
                 <input
                   type="password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-[#f0f0f2] border border-transparent focus:border-[#e60023] focus:bg-white rounded-full pl-10 pr-4 py-2.5 text-[#111111] font-medium focus:outline-none transition-colors"
                   required
                 />
               </div>
             </div>
 
-            <div className="p-3 bg-slate-950/80 rounded border border-slate-800 text-[10px] text-slate-400 space-y-1">
-              <span className="text-cyan-400 font-bold block">Seeded Demonstration Accounts:</span>
-              <div>• responder_alpha / FcsDemo2026! (Security Responder)</div>
-              <div>• analyst_alpha / FcsDemo2026! (Security Analyst)</div>
-              <div>• admin_alpha / FcsDemo2026! (Tenant Admin)</div>
+            <div className="p-3 bg-[#fafafa] rounded-2xl border border-[#ebebeb] text-[11px] text-[#767676] space-y-1.5">
+              <span className="text-[#111111] font-bold block uppercase text-[10px]">Quick Demo Accounts:</span>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginUsername('responder_alpha');
+                    setLoginPassword('FcsDemo2026!');
+                  }}
+                  className="px-3 py-1 rounded-full bg-white hover:bg-[#fff0f2] hover:text-[#e60023] border border-[#ebebeb] text-[#111111] font-mono font-medium shadow-xs transition-colors"
+                >
+                  responder_alpha
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginUsername('analyst_alpha');
+                    setLoginPassword('FcsDemo2026!');
+                  }}
+                  className="px-3 py-1 rounded-full bg-white hover:bg-[#fff0f2] hover:text-[#e60023] border border-[#ebebeb] text-[#111111] font-mono font-medium shadow-xs transition-colors"
+                >
+                  analyst_alpha
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginUsername('admin_alpha');
+                    setLoginPassword('FcsDemo2026!');
+                  }}
+                  className="px-3 py-1 rounded-full bg-white hover:bg-[#fff0f2] hover:text-[#e60023] border border-[#ebebeb] text-[#111111] font-mono font-medium shadow-xs transition-colors"
+                >
+                  admin_alpha
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+              className="w-full py-3 rounded-full bg-[#e60023] hover:bg-[#bd081c] text-white font-bold text-xs transition-all disabled:opacity-50 shadow-md hover:scale-[1.01]"
             >
-              {isLoggingIn ? 'Authenticating...' : 'Sign In to SOC'}
+              {isLoggingIn ? 'Authenticating...' : 'Sign In to Security Operations'}
             </button>
           </form>
 
-          <div className="text-center text-[10px] font-mono text-slate-500">
-            Phase 4 Development Environment • Strictly ₹0 / $0 Budget Constraint
+          <div className="text-center text-[10px] font-mono text-[#767676] pt-1 border-t border-zinc-100">
+            Controlled Sandbox • Zero-Cost Policy Verified
           </div>
         </div>
       </div>
@@ -352,10 +397,6 @@ export const App: React.FC = () => {
     overview: {
       title: 'Security Operations Overview',
       subtitle: `Real-time monitoring telemetry for ${currentTenantObj?.name || 'Selected ISP'}`,
-    },
-    threats: {
-      title: 'Real-Time Threat Detection Stream',
-      subtitle: 'Continuous event window aggregation and ML anomaly scoring',
     },
     incidents: {
       title: 'Incident Management & Investigation',
@@ -388,12 +429,12 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-slate-100 flex">
+    <div className="min-h-screen bg-[#f7f7f8] text-[#111111] flex font-sans">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 border border-cyan-500 text-cyan-300 text-xs px-4 py-3 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.4)] font-mono animate-bounce flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-400" />
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 bg-white border border-[#ebebeb] text-[#111111] text-xs px-4 py-3 rounded-full shadow-xl font-sans flex items-center gap-2.5">
+          <span className="w-2 h-2 rounded-full bg-[#e60023] shrink-0" />
+          <span className="font-semibold">{toastMessage}</span>
         </div>
       )}
 
@@ -423,89 +464,87 @@ export const App: React.FC = () => {
         />
 
         <main className="flex-1 p-6 overflow-y-auto">
-          {currentTab === 'overview' && (
-            <OverviewPage
-              stats={stats}
-              recentIncidents={incidents}
-              onSelectIncident={(inc) => {
-                setSelectedIncident(inc);
-                setCurrentTab('incidents');
-              }}
-              onNavigateToIncidents={() => setCurrentTab('incidents')}
-              onNavigateToResponse={() => setCurrentTab('actions')}
-            />
-          )}
+          <ErrorBoundary>
+            {currentTab === 'overview' && (
+              <OverviewPage
+                stats={stats}
+                recentIncidents={incidents}
+                onSelectIncident={(inc) => {
+                  setSelectedIncident(inc);
+                  setCurrentTab('incidents');
+                }}
+                onNavigateToIncidents={() => setCurrentTab('incidents')}
+                onNavigateToResponse={() => setCurrentTab('actions')}
+              />
+            )}
 
-          {currentTab === 'pilot' && (
-            <PilotOperationsPage selectedTenantId={selectedTenantId} />
-          )}
+            {currentTab === 'pilot' && (
+              <PilotOperationsPage selectedTenantId={selectedTenantId} />
+            )}
 
-          {currentTab === 'threats' && (
-            <ThreatMonitoringPage
-              incidents={incidents}
-              onSelectIncident={(inc) => {
-                setSelectedIncident(inc);
-                setCurrentTab('incidents');
-              }}
-            />
-          )}
+            {currentTab === 'incidents' && (
+              <IncidentsPage
+                incidents={incidents}
+                selectedIncident={selectedIncident}
+                onSelectIncident={setSelectedIncident}
+                onUpdateStatus={handleUpdateStatus}
+                incidentHistory={incidentHistory}
+                recommendations={incidentRecs}
+                onNavigateToResponseWithIncident={(inc) => {
+                  setSelectedIncident(inc);
+                  setCurrentTab('actions');
+                }}
+              />
+            )}
 
-          {currentTab === 'incidents' && (
-            <IncidentsPage
-              incidents={incidents}
-              selectedIncident={selectedIncident}
-              onSelectIncident={setSelectedIncident}
-              onUpdateStatus={handleUpdateStatus}
-              incidentHistory={incidentHistory}
-              recommendations={incidentRecs}
-              onNavigateToResponseWithIncident={(inc) => {
-                setSelectedIncident(inc);
-                setCurrentTab('actions');
-              }}
-            />
-          )}
+            {currentTab === 'actions' && (
+              <ManualResponsePage
+                recommendations={
+                  selectedIncident
+                    ? (incidentRecs.length > 0
+                        ? incidentRecs
+                        : allRecommendations.filter((r) => r.incident_id === selectedIncident.incident_id))
+                    : allRecommendations
+                }
+                actions={actions}
+                firewallRules={firewallRules}
+                activeIncidents={incidents.filter(
+                  (i) => i.status !== 'RESOLVED' && i.status !== 'CLOSED' && i.status !== 'FALSE_POSITIVE'
+                )}
+                currentUser={currentUser}
+                onApproveAction={handleApproveAction}
+                onRollbackAction={handleRollbackAction}
+                targetIncident={selectedIncident}
+              />
+            )}
 
-          {currentTab === 'actions' && (
-            <ManualResponsePage
-              recommendations={incidentRecs.length > 0 ? incidentRecs : []}
-              actions={actions}
-              firewallRules={firewallRules}
-              activeIncidents={incidents.filter(
-                (i) => i.status !== 'RESOLVED' && i.status !== 'CLOSED' && i.status !== 'FALSE_POSITIVE'
-              )}
-              currentUser={currentUser}
-              onApproveAction={handleApproveAction}
-              onRollbackAction={handleRollbackAction}
-              targetIncident={selectedIncident}
-            />
-          )}
+            {currentTab === 'health' && (
+              <NetworkHealthPage
+                exporters={exporters}
+                stats={stats}
+                currentTenant={currentTenantObj}
+              />
+            )}
 
-          {currentTab === 'health' && (
-            <NetworkHealthPage
-              exporters={exporters}
-              stats={stats}
-              currentTenant={currentTenantObj}
-            />
-          )}
+            {currentTab === 'models' && (
+              <ModelMonitoringPage
+                modelDetails={modelDetails}
+                modelHealth={modelHealth}
+              />
+            )}
 
-          {currentTab === 'models' && (
-            <ModelMonitoringPage
-              modelDetails={modelDetails}
-              modelHealth={modelHealth}
-            />
-          )}
+            {currentTab === 'federation' && <FederationPage />}
 
-          {currentTab === 'federation' && <FederationPage />}
+            {currentTab === 'governance' && <GovernancePage />}
 
-          {currentTab === 'governance' && <GovernancePage />}
-
-          {currentTab === 'settings' && (
-            <SettingsPage
-              currentTenant={currentTenantObj}
-              currentUser={currentUser}
-              policy={policy}
-            />
-          )}
+            {currentTab === 'settings' && (
+              <SettingsPage
+                currentTenant={currentTenantObj}
+                currentUser={currentUser}
+                policy={policy}
+              />
+            )}
+          </ErrorBoundary>
         </main>
       </div>
     </div>

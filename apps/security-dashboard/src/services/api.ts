@@ -77,7 +77,10 @@ export const api = {
 
   getExportersCoverage: async (tenantId?: string): Promise<Exporter[]> => {
     const q = tenantId ? `?tenant_id=${encodeURIComponent(tenantId)}` : '';
-    return request<Exporter[]>(`/coverage${q}`);
+    const res = await request<any>(`/coverage${q}`);
+    if (Array.isArray(res)) return res;
+    if (res && Array.isArray(res.exporters)) return res.exporters;
+    return [];
   },
 
   // Incidents
@@ -108,6 +111,15 @@ export const api = {
 
   getIncidentRecommendations: async (incidentId: string): Promise<Recommendation[]> => {
     return request<Recommendation[]>(`/incidents/${incidentId}/recommendations`);
+  },
+
+  listRecommendations: async (tenantId?: string, status?: string): Promise<Recommendation[]> => {
+    const params = new URLSearchParams();
+    if (tenantId) params.set('tenant_id', tenantId);
+    if (status) params.set('status', status);
+    const q = params.toString() ? `?${params.toString()}` : '';
+    const res = await request<Recommendation[]>(`/recommendations${q}`);
+    return Array.isArray(res) ? res : [];
   },
 
   // Actions & Firewall Simulator
@@ -282,5 +294,28 @@ export const api = {
       method: 'POST',
     });
   },
+
+  // Federation
+  getFederationStatus: async () => request<any>('/federation/status'),
+  getFederationParticipants: async () => request<any>('/federation/participants'),
+  getFederationModels: async () => request<any>('/federation/models'),
+  getFederationRounds: async () => request<any>('/federation/rounds'),
+  getFederationPrivacyStatus: async () => request<any>('/federation/privacy-status'),
+  getFederationHealth: async () => request<any>('/federation/health'),
+  runFederationSimulation: async (payload: any) =>
+    request<any>('/dev/federation/run', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  simulateDropout: async (droppedClients: string[]) =>
+    request<any>('/dev/federation/simulate-dropout', {
+      method: 'POST',
+      body: JSON.stringify({ dropped_clients: droppedClients }),
+    }),
+
+  // Governance
+  getGovernanceStatus: async () => request<any>('/governance/status'),
+  getGovernanceOrganizations: async () => request<any>('/governance/organizations'),
+  getGovernanceReleases: async () => request<any>('/governance/releases'),
 };
 

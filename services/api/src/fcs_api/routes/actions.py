@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
 from ..auth.dependencies import get_current_user, verify_tenant_boundary
+from ..database import get_db
 from ..firewall.simulator import FirewallSimulator
 from ..response.policy import ResponsePolicyEngine, ResponsePolicyError
 
@@ -52,6 +53,26 @@ def approve_and_execute_action(
         if "not found" in err_msg:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=err_msg) from e
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=err_msg) from e
+
+
+@router.get("/recommendations")
+def list_recommendations(
+    tenant_id: str | None = Query(default=None),
+    status: str | None = Query(default=None),
+    user: dict[str, Any] = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Retrieve defensive action recommendations for the tenant."""
+    target_tenant_id = tenant_id or user.get("tenant_id") or "rural-isp-alpha"
+    verify_tenant_boundary(user, target_tenant_id)
+    with get_db() as conn:
+        query = "SELECT * FROM recommendations WHERE tenant_id = ?"
+        params: list[Any] = [target_tenant_id]
+        if status:
+            query += " AND status = ?"
+            params.append(status)
+        query += " ORDER BY created_at DESC LIMIT 50"
+        rows = conn.execute(query, params).fetchall()
+        return [dict(r) for r in rows]
 
 
 @router.get("/actions")

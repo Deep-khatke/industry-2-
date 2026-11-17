@@ -53,3 +53,4 @@ print(res)
 - **Integrity Check**: 100% `PRAGMA integrity_check == "ok"`.
 - **Privacy Verification**: Epsilon spend verified non-zero.
 - **Safety Invariant**: Gate G13 confirmed disabled in restored state.
+

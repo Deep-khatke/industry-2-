@@ -57,3 +57,4 @@ export FCS_ENFORCE_ZERO_COST="true"
 export FCS_AUTO_RESPONSE_ENABLED="false"  # Invariant: Must remain false
 export FCS_ALLOW_DEMO_ENDPOINTS="false"
 ```
+

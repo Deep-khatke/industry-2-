@@ -111,3 +111,4 @@ def test_demo_accounts_rejected_outside_development(monkeypatch):
     )
     assert resp.status_code == 403
     assert "strictly prohibited" in resp.json()["detail"].lower()
+

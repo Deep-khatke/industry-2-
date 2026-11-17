@@ -37,3 +37,4 @@ jobs:
       - name: "Run Contract Verification Suites"
         run: |
           pytest tests/phase11/contracts/ tests/system/contracts/ -v
+

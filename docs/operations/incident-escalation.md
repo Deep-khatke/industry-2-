@@ -41,3 +41,4 @@ sequenceDiagram
 - **DDoS Volumetric Floods**: Automatically prioritized as `CRITICAL`. Immediate recommendation: Rate-limit or blackhole attacking source prefix.
 - **Port Scan / Reconnaissance**: Prioritized as `MEDIUM`. Recommendation: Drop scan packets for 1800s.
 - **Cross-Tenant Breach Attempt**: System-level `SECURITY_AUDIT` alert dispatched immediately to all tenant administrators.
+

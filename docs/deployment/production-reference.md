@@ -49,3 +49,4 @@ Expected output:
   "auto_live_gated": true
 }
 ```
+

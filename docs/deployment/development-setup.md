@@ -62,3 +62,4 @@ npm run dev
 ```
 
 Visit `http://localhost:5173` to explore the live security operations dashboard.
+

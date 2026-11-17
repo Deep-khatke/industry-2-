@@ -114,7 +114,30 @@ cd ../..
 
 ---
 
-## Operational CLI & Demonstration Commands
+### Quick Start (Windows 1-Click Launcher)
+
+Double-click `start.bat` (or `run.bat`) in the project root, or execute:
+
+```cmd
+start.bat
+```
+
+This automatically:
+1. Validates Python & Node.js prerequisites.
+2. Initializes SQLite database and seeds 7 ISP demonstration tenants and accounts.
+3. Spawns the **FastAPI Backend Server** on `http://127.0.0.1:8000`.
+4. Spawns the **React SOC Dashboard** on `http://127.0.0.1:5173`.
+5. Launches your default web browser to the dashboard.
+
+To stop both services cleanly at any time, run:
+
+```cmd
+stop.bat
+```
+
+---
+
+## Manual Workspace Setup & Verification
 
 > [!NOTE]
 > Demonstration accounts and endpoints are strictly scoped to the `DEVELOPMENT` environment profile and are automatically rejected in staging and production reference modes.

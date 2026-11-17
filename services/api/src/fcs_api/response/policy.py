@@ -160,6 +160,12 @@ class ResponsePolicyEngine:
                 (action_status, json.dumps(fw_result), action_id),
             )
 
+            if recommendation_id:
+                conn.execute(
+                    "UPDATE recommendations SET status = 'APPLIED' WHERE recommendation_id = ?",
+                    (recommendation_id,),
+                )
+
             # Record audit event
             conn.execute(
                 """

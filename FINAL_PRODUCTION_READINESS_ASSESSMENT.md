@@ -39,3 +39,4 @@ In accordance with zero-cost and safety requirements, operators should deploy us
 - **Response Mode:** `FIREWALL_SIMULATOR_ONLY`
 - **Database Engine:** WAL-backed SQLite with daily atomic backups
 - **Observability:** Prometheus metrics (`/metrics`) scraped every 15 seconds.
+

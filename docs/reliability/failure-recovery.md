@@ -33,3 +33,4 @@ flowchart TD
    - If the Flower server is unreachable, local nodes log a retry warning and continue scoring network traffic using the active validated local model.
 3. **Database Write Lock Contention**:
    - Handled via SQLite WAL concurrency mode and exponential backoff retry in the API persistence layer.
+

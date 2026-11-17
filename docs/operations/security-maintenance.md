@@ -18,3 +18,4 @@
 When an analyst departs or credentials are compromised:
 1. Invalidate user tokens via `POST /v1/auth/logout` with Bearer token.
 2. In emergency scenarios, rotate `FCS_SECRET_KEY` in the environment configuration to instantly invalidate all outstanding active JWT sessions across the cluster.
+

@@ -27,3 +27,4 @@ For hermetic validation inside Linux containers:
 ```bash
 docker compose -f infrastructure/containers/integration/docker-compose.integration.yml up --abort-on-container-exit --exit-code-from integration-tests
 ```
+

@@ -103,18 +103,34 @@ class FirewallSimulator:
             return True
 
     @classmethod
-    def list_active_rules(cls, tenant_id: str) -> list[dict[str, Any]]:
-        """List currently active, non-expired simulated rules for a tenant."""
-        now_str = datetime.now(UTC).isoformat()
+    def list_active_rules(cls, tenant_id: str, include_expired: bool = False) -> list[dict[str, Any]]:
+        """List simulated rules for a tenant.
+
+        Args:
+            tenant_id: Tenant whose rules to list.
+            include_expired: When *True* return all rules regardless of status;
+                when *False* (default) return only currently active, non-expired rules.
+        """
         with get_db() as conn:
-            rows = conn.execute(
-                """
-                SELECT * FROM simulated_firewall_rules
-                WHERE tenant_id = ? AND status = 'ACTIVE' AND expires_at > ?
-                ORDER BY created_at DESC
-                """,
-                (tenant_id, now_str),
-            ).fetchall()
+            if include_expired:
+                rows = conn.execute(
+                    """
+                    SELECT * FROM simulated_firewall_rules
+                    WHERE tenant_id = ?
+                    ORDER BY created_at DESC
+                    """,
+                    (tenant_id,),
+                ).fetchall()
+            else:
+                now_str = datetime.now(UTC).isoformat()
+                rows = conn.execute(
+                    """
+                    SELECT * FROM simulated_firewall_rules
+                    WHERE tenant_id = ? AND status = 'ACTIVE' AND expires_at > ?
+                    ORDER BY created_at DESC
+                    """,
+                    (tenant_id, now_str),
+                ).fetchall()
             return [dict(r) for r in rows]
 
     @classmethod

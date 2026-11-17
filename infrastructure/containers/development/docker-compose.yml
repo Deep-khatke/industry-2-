@@ -56,3 +56,4 @@ services:
         limits:
           cpus: '1.0'
           memory: 512M
+

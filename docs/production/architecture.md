@@ -65,3 +65,4 @@ flowchart TD
 - **Tenant Isolation**: 7 simulated ISP tenants (T01 through T07) maintain disjoint telemetry, alert subscriptions, and incident records. Cross-tenant access is blocked at the authentication, ORM, and database filtering layers.
 - **Zero-Cost Foundation**: Designed, verified, and maintainable under strict ₹0 / $0 financial expenditure using standard open-source runtimes (Python 3.11+, TypeScript/Vite, SQLite, OpenTofu, Docker/Compose).
 - **Gate G13 Invariant**: Autonomous direct router reconfiguration (`AUTO_LIVE`) remains strictly disabled in software configuration and architectural policy. All mitigation actions require explicit human operator approval via the Firewall Simulator.
+

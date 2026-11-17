@@ -36,3 +36,4 @@ def test_backup_and_restore_cycle_preserves_invariants(tmp_path):
     assert result.auto_live_disabled is True
     assert result.revoked_models_preserved is True
     assert result.rto_seconds < 1.0  # Local RTO target well under 1 second
+

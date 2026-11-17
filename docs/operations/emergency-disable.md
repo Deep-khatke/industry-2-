@@ -30,3 +30,4 @@ export FCS_EMERGENCY_DISABLE="true"
 - **Simulator Flush**: All active simulated rate-limits or blackhole rules are purged immediately.
 - **Passive Monitoring Unaffected**: Flow window collection, feature extraction, and ML scoring continue uninterrupted to record forensic data.
 - **Fail-Safe Default**: If communication between components is severed, the system defaults to safe passive monitoring.
+

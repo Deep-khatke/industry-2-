@@ -35,3 +35,4 @@ jobs:
         run: |
           test -f artifacts/phase11/sbom/cyclonedx_sbom.json
           test -f artifacts/phase11/sbom/spdx_sbom.json
+

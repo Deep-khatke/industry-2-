@@ -44,3 +44,4 @@ docker compose -f docker-compose.prod-reference.yml up -d
    - Verify target IP is NOT a protected resource.
    - Verify duration TTL is within policy bounds (e.g. 3600s).
 5. As `SECURITY_ADMIN`, click **Approve Action** to simulate mitigation in Firewall Simulator.
+

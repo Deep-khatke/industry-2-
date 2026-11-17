@@ -43,3 +43,4 @@ def test_healthz_endpoint_contract():
     assert data["mode"] == "MANUAL"
     assert data["auto_response_enabled"] is False
     assert data["zero_cost_enforced"] is True
+
